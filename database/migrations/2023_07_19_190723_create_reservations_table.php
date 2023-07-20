@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained();
             $table->date('reservation_date');
             $table->tinyInteger('is_approved')->default(0);
+            $table->tinyInteger('is_visible')->default(1);
             $table->string('notes')->nullable();
             $table->timestamps();
         });

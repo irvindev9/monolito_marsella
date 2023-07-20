@@ -1,6 +1,7 @@
 import './bootstrap';
 import '../css/app.css';
 import 'v-calendar/style.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 
 import { createApp, h } from 'vue';

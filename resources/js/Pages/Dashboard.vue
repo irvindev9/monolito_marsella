@@ -1,5 +1,4 @@
 <script setup>
-import Loader from '@/assets/loaging.svg';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { Calendar, DatePicker } from 'v-calendar';
@@ -7,6 +6,7 @@ import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { toast } from 'vue3-toastify';
 import axios from 'axios';
+import DangerButton from '@/Components/DangerButton.vue';
 
 const date = new Date();
 const year = date.getFullYear();
@@ -109,22 +109,27 @@ const renderLoader = () => h('div', { innerHtml: Loader });
             </div>
         </div>
 
-        <div class="px-12">
-            <Label class="font-bold">Mis reservas</Label>
-            <div class="sm:flex sm:items-center sm:justify-between sm:space-x-5 bg-white rounded-lg px-1">
-                <div class="flex items-center flex-1 min-w-0">
-                    <img src="https://d34u8crftukxnk.cloudfront.net/slackpress/prod/sites/6/SlackLogo_CompanyNews_SecondaryAubergine_Hero.jpg?d=500x500&amp;f=fill"
-                        class="flex-shrink-0 object-cover rounded-full btn- w-10 h-10" />
-                    <div class="mt-0 mr-0 mb-0 ml-4 flex-1 min-w-0">
-                        <p class="text-lg font-bold text-gray-800 truncate">Engineering Manager</p>
-                        <p class="text-gray-600 text-md">Slack</p>
+        <div>
+            <Label class="px-12 font-bold">Mis reservas</Label>
+            <div class="px-12 rounded mx-12 py-4 bg-white">
+                <div class="sm:flex sm:items-center sm:justify-between sm:space-x-5 bg-green-100 rounded-lg px-1 my-3"
+                    v-for="n in 3">
+                    <div class="flex items-center flex-1 min-w-0">
+                        <img src="../../assets/calendar.png" alt="calendar"
+                            class="flex-shrink-0 object-cover rounded-full btn- w-10 h-10" />
+                        <div class="mt-0 mr-0 mb-0 ml-4 flex-1 min-w-0">
+                            <p class="text-lg truncate">Irvin Lopez - De Ader 2262</p>
+                            <p class="text-md">Fecha reserva: <span class="font-bold">02/06/2023</span></p>
+                            <small class="text-sm">Aprovado</small>
+                        </div>
                     </div>
-                </div>
-                <div class="mt-4 mr-0 mb-0 ml-0 pt-0 pr-0 pb-0 pl-14 flex items-center sm:space-x-6 sm:pl-0 sm:mt-0">
-                    <a href="" class="bg-gray-800 pt-2 pr-6 pb-2 pl-6 text-lg font-medium text-gray-100 transition-all
-                    duration-200 hover:bg-gray-700 rounded-lg">Apply</a>
+                    <DangerButton>
+                        <i class="bi bi-trash"></i>
+                        Borrar
+                    </DangerButton>
                 </div>
             </div>
+
         </div>
     </AuthenticatedLayout>
 </template>
