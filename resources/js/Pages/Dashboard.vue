@@ -6,7 +6,7 @@ import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { toast } from 'vue3-toastify';
 import axios from 'axios';
-import DangerButton from '@/Components/DangerButton.vue';
+import Reservation from '@/Components/Reservation.vue';
 
 const date = new Date();
 const year = date.getFullYear();
@@ -105,31 +105,14 @@ const renderLoader = () => h('div', { innerHtml: Loader });
             <div class="w-3/4 mx-auto sm:px-3 lg:px-12">
                 <Label class="font-bold">Reservaciones</Label>
                 <Calendar expanded :attributes="attrs" />
-
             </div>
         </div>
 
         <div>
             <Label class="px-12 font-bold">Mis reservas</Label>
             <div class="px-12 rounded mx-12 py-4 bg-white">
-                <div class="sm:flex sm:items-center sm:justify-between sm:space-x-5 bg-green-100 rounded-lg px-1 my-3"
-                    v-for="n in 3">
-                    <div class="flex items-center flex-1 min-w-0">
-                        <img src="../../assets/calendar.png" alt="calendar"
-                            class="flex-shrink-0 object-cover rounded-full btn- w-10 h-10" />
-                        <div class="mt-0 mr-0 mb-0 ml-4 flex-1 min-w-0">
-                            <p class="text-lg truncate">Irvin Lopez - De Ader 2262</p>
-                            <p class="text-md">Fecha reserva: <span class="font-bold">02/06/2023</span></p>
-                            <small class="text-sm">Aprovado</small>
-                        </div>
-                    </div>
-                    <DangerButton>
-                        <i class="bi bi-trash"></i>
-                        Borrar
-                    </DangerButton>
-                </div>
+                <Reservation />
             </div>
-
         </div>
     </AuthenticatedLayout>
 </template>
