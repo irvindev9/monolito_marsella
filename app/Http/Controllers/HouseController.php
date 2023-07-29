@@ -3,18 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Reservation;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Redirect;
+use App\Models\House;
 
-class ReservationController extends Controller
+class HouseController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $houses = House::with('street')->get();
+
+        return response()->json($houses);
     }
 
     /**
@@ -29,16 +29,8 @@ class ReservationController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {   
-        $user = $request->user();
-
-        Reservation::create([
-            'house_id' => $user->house_id,
-            'user_id' => $user->id,
-            'reservation_date' => date('Y-m-d', strtotime($request->reservation_date)),
-        ]);
-
-        return Redirect::route('dashboard')->with('success', 'Reservation created.');
+    {
+        //
     }
 
     /**

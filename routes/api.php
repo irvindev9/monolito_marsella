@@ -2,6 +2,9 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\HouseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,5 +22,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/reservations', [\App\Http\Controllers\ReservationController::class, 'store']);
+    Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
+});
+
+Route::middleware(['auth:sanctum', 'admin:sanctum'])->group(function () {
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+
+    Route::get('/addresses', [HouseController::class, 'index'])->name('house.index');
 });
