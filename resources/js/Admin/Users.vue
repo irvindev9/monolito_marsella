@@ -1,21 +1,37 @@
 <script setup>
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import DangerButton from '@/Components/DangerButton.vue';
+import Records from './Users/Records.vue';
 import { Head } from '@inertiajs/vue3';
 import { onMounted, ref } from 'vue';
 import { useAdminStore } from '@/Stores/adminStore';
+import FormRecord from './Users/FormRecord.vue';
 
 const store = useAdminStore();
 const users = ref([]);
+const editForm = ref(false);
+const editUser = ref(null);
 
 onMounted(async () => {
+    await getUsers();
+});
+
+function openEditor(id) {
+    editForm.value = true;
+    editUser.value = users.value.find(user => user.id === id);
+}
+
+async function getUsers() {
     store.setIsLoading(true);
     const { data } = await axios.get('/api/users')
     users.value = data;
     setTimeout(() => {
         store.setIsLoading(false);
-    }, 1000);
-});
+    }, 500);
+}
+
+async function updateUser() {
+    await getUsers();
+    editForm.value = false;
+}
 </script>
 
 <template>
@@ -24,31 +40,7 @@ onMounted(async () => {
     <h4 class="font-bold my-3">
         Usuarios
     </h4>
-    <table class="table-fixed border table-records">
-        <thead>
-            <tr>
-                <th class="px-4 py-2">Nombre</th>
-                <th class="px-4 py-2">Email</th>
-                <th class="px-4 py-2">Domicilio</th>
-                <th class="px-4 py-2">Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="user in users" :key="user.id">
-                <td class="border px-4 py-2">{{ user.name }}</td>
-                <td class="border px-4 py-2">{{ user.email }}</td>
-                <td class="border px-4 py-2">{{ `${user.house.street.name} ${user.house.house_number}` }}</td>
-                <td class="border px-4 py-2 text-center">
-                    <PrimaryButton class="m-1">
-                        <i class="bi bi-pencil"></i>
-                        Editar
-                    </PrimaryButton>
-                    <DangerButton>
-                        <i class="bi bi-trash"></i>
-                        Borrar
-                    </DangerButton>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <Records :users="users" v-if="!editForm" @close="openEditor" />
+
+    <FormRecord :editUser="editUser" v-if="editForm" @close="updateUser" />
 </template>

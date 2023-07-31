@@ -15,4 +15,9 @@ class House extends Model
     {
         return $this->belongsTo(Street::class);
     }
+
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
 }

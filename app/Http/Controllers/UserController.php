@@ -54,7 +54,15 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $user = User::find($id);
+
+        if ($request->has('house_id')) {
+            $user->house_id = $request->house_id;
+        }
+
+        $user->save();
+
+        return response()->json(['message' => 'User updated successfully']);
     }
 
     /**

@@ -27,6 +27,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::middleware(['auth:sanctum', 'admin:sanctum'])->group(function () {
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
 
     Route::get('/addresses', [HouseController::class, 'index'])->name('house.index');
+    Route::post('/addresses', [HouseController::class, 'store'])->name('house.store');
+    Route::delete('/addresses', [HouseController::class, 'destroy'])->name('house.destroy');
+
+    Route::get('/streets', function () {
+        return response()->json(\App\Models\Street::all());
+    })->name('streets.index');
 });

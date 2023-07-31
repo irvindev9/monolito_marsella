@@ -12,7 +12,7 @@ class HouseController extends Controller
      */
     public function index()
     {
-        $houses = House::with('street')->get();
+        $houses = House::with(['street', 'users'])->get();
 
         return response()->json($houses);
     }
@@ -30,7 +30,12 @@ class HouseController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        House::updateOrCreate([
+            'street_id' => $request->street_id,
+            'house_number' => $request->house_number,
+        ]);
+
+        return response()->json(['message' => 'House created successfully']);
     }
 
     /**
@@ -60,8 +65,11 @@ class HouseController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
         //
+        House::destroy($request->id);
+
+        return response()->json(['message' => 'House deleted successfully']);
     }
 }
