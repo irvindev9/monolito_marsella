@@ -40,7 +40,7 @@ async function updateUser() {
     <h4 class="font-bold my-3">
         Usuarios
     </h4>
-    <Records :users="users" v-if="!editForm" @close="openEditor" />
+    <Records :users="users" v-if="!editForm" @close="openEditor" @refresh="getUsers" />
 
     <FormRecord :editUser="editUser" v-if="editForm" @close="updateUser" />
 </template>

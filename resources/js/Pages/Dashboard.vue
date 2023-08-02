@@ -1,88 +1,94 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import LoadingScreen from '@/Components/LoadingScreen.vue';
 import { Head } from '@inertiajs/vue3';
 import { Calendar, DatePicker } from 'v-calendar';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { toast } from 'vue3-toastify';
 import Reservation from '@/Components/Reservation.vue';
-import axios from 'axios';
 
-const date = new Date();
-const year = date.getFullYear();
-const month = date.getMonth();
 const isLoading = ref(false);
+const reservations = ref([]);
+const reservationComponent = ref(null);
 
-const attrs = ref([
-    {
-        key: 'today',
-        highlight: {
-            color: 'purple',
-            fillMode: 'solid',
-            contentClass: 'italic',
-        },
-        dates: new Date(year, month, 10),
-        description: 'Reservado',
-        popover: true,
-    },
-    {
-        key: 'event',
-        highlight: {
-            color: 'green',
-            fillMode: 'light',
-            contentStyle: {
-                color: 'white',
-            },
-        },
-        dates: [
-            new Date(year, month, 12),
-            new Date(year, month, 13),
-            new Date(year, month, 14),
-        ],
-        description: 'Reservado',
-        popover: true,
-    },
-    {
-        key: 'holiday',
-        dot: 'blue',
-        dates: [
-            new Date(year, month, 17),
-            new Date(year, month, 18),
-            new Date(year, month, 19),
-        ],
-        description: 'Reservas en espera',
-        popover: true,
-    },
-]);
+const attrs = ref([]);
 const pickDate = ref(new Date());
 
-const reserveDate = async () => {
+async function reserveDate() {
     isLoading.value = true;
-    await axios.post('/api/reservations', {
-        reservation_date: pickDate.value,
-    }).then((response) => {
-        console.log(response);
-        isLoading.value = false;
+    try {
+        await axios.post('/api/reservations', {
+            reservation_date: pickDate.value,
+        })
         toast.success('Fecha solicitada, en espera de confirmación');
-    }).catch((error) => {
+        await getReservations();
+        isLoading.value = false;
+    } catch (error) {
         console.log(error);
         isLoading.value = false;
-        toast.error('Error al solicitar fecha');
-    });
-
+    }
 };
+
+async function getReservations() {
+    try {
+        const { data } = await axios.get('/api/reservations');
+        reservations.value = data;
+        updateCalendarAttrs();
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+onMounted(async () => {
+    isLoading.value = true;
+    await getReservations();
+    isLoading.value = false;
+});
+
+function updateCalendarAttrs() {
+    const newAttrs = [];
+    reservations.value.forEach((reservation) => {
+        if (reservation.is_approved === 1) {
+            newAttrs.push({
+                key: 'today',
+                highlight: {
+                    color: 'blue',
+                    fillMode: 'solid',
+                    contentClass: 'italic',
+                },
+                dates: new Date(reservation.reservation_date),
+                description: 'Reservado',
+                popover: true,
+            });
+        }
+
+        if (reservation.is_approved === 0) {
+            newAttrs.push({
+                key: 'holiday',
+                dot: 'blue',
+                dates: [
+                    new Date(reservation.reservation_date),
+                ],
+                description: 'Reservas en espera',
+                popover: true,
+            });
+        }
+
+    });
+    attrs.value = newAttrs;
+}
 
 </script>
 
 <template>
-    <Head title="Dashboard" />
+    <Head title="Terraza" />
 
     <AuthenticatedLayout>
         <div class="lg:flex p-3">
             <div class="sm:w-full lg:w-1/4 mx-auto sm:px-3 lg:px-12 mb-5">
                 <Label class="font-bold">Reservar fecha</Label>
-                <DatePicker expanded v-model="pickDate" />
-                <!-- <p>{{ pickDate }}</p> -->
+                <DatePicker expanded v-model="pickDate" timezone="America/Mexico_City" />
                 <PrimaryButton class="my-3" @click="reserveDate">
                     <div v-if="!isLoading">
                         Reservar fecha
@@ -94,15 +100,27 @@ const reserveDate = async () => {
             </div>
             <div class="sm:w-full lg:w-3/4 mx-auto sm:px-3 lg:px-12">
                 <Label class="font-bold">Reservaciones</Label>
-                <Calendar expanded :attributes="attrs" />
+                <Calendar expanded :attributes="attrs" timezone="America/Mexico_City" />
+                <div class="w-full bg-white rounded border border-slate-300 mt-3 p-3">
+                    <Label class="font-bold">Representación gráfica de las reservas</Label>
+                    <div class="flex space-x-4">
+                        <div>
+                            <i class="bi bi-5-circle-fill text-blue"></i> Reservado
+                        </div>
+                        <div>
+                            <i class="bi bi-circle-fill text-xs text-blue font-xs"></i> En espera de aprobación
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="px-3">
-            <Label class="px-12 font-bold">Mis reservas</Label>
-            <div class="px-12 rounded mx-12 py-4 bg-white">
-                <Reservation />
+        <div class="px-3 lg:mx-12">
+            <Label class="font-bold">Mis reservas</Label>
+            <div class="border border-slate-300 rounded p-4 bg-white">
+                <Reservation v-if="!isLoading" @refresh="getReservations" />
             </div>
         </div>
+        <LoadingScreen :show="isLoading" />
     </AuthenticatedLayout>
 </template>

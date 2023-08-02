@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Reservation;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Redirect;
+use Illuminate\Database\Eloquent\Builder;
 
 class ReservationController extends Controller
 {
@@ -14,7 +13,12 @@ class ReservationController extends Controller
      */
     public function index()
     {
-        //
+        //reservations of actual year
+        $reservations = Reservation::whereYear('reservation_date', date('Y'))->where('is_visible', 1)->where(function(Builder $query){
+            $query->where('is_approved', 1)->orWhere('is_approved', 0);
+        })->get();
+
+        return response()->json($reservations);
     }
 
     /**
@@ -32,13 +36,18 @@ class ReservationController extends Controller
     {   
         $user = $request->user();
 
-        Reservation::create([
+        // $date_time_javascript_to_php = strtotime($request->reservation_date);
+
+       $reservation =  Reservation::create([
             'house_id' => $user->house_id,
             'user_id' => $user->id,
-            'reservation_date' => date('Y-m-d', strtotime($request->reservation_date)),
+            'reservation_date' => date('Y-m-d 12:00:00', strtotime($request->reservation_date)),
         ]);
 
-        return Redirect::route('dashboard')->with('success', 'Reservation created.');
+        return response()->json([
+            'message' => 'Reservación creada exitosamente',
+            'reservation' => $request->reservation_date
+        ]);
     }
 
     /**
@@ -46,7 +55,9 @@ class ReservationController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $reservation = Reservation::where('house_id', $id)->where('is_visible', 1)->with(['house.street', 'user'])->orderBy('is_approved', 'asc')->get();
+
+        return response()->json($reservation);
     }
 
     /**
@@ -70,6 +81,14 @@ class ReservationController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $reservation = Reservation::find($id);
+
+        $reservation->is_visible = 0;
+
+        $reservation->save();
+
+        return response()->json([
+            'message' => 'Reservación eliminada exitosamente'
+        ]);
     }
 }

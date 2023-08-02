@@ -1,22 +1,52 @@
 <script setup>
 import DangerButton from '@/Components/DangerButton.vue';
+import { ref, onMounted, defineEmits } from 'vue';
+import { usePage } from '@inertiajs/vue3';
+import { format } from 'date-fns';
+import { toast } from 'vue3-toastify';
+
+const emit = defineEmits(['refresh']);
+const myReservations = ref([]);
+const user = usePage().props.auth.user;
+
+async function getReservations() {
+    const { data } = await axios.get(`/api/reservations/${user.house_id}`);
+    myReservations.value = data;
+}
+
+async function deleteReservation(id) {
+    const { data } = await axios.delete(`/api/reservations/${id}`);
+    console.log(data.message);
+    await getReservations();
+    emit('refresh');
+    toast.success(data.message);
+}
+
+onMounted(async () => {
+    await getReservations();
+});
 
 </script>
 
 <template>
-    <div class="sm:flex sm:items-center sm:justify-between sm:space-x-5 bg-green-100 rounded-lg px-1 my-3" v-for="n in 3">
+    <div class="sm:flex sm:items-center sm:justify-between sm:space-x-5 rounded-lg px-1 my-3 border border-slate-200"
+        :class="{ 'bg-gray-100': reservation.is_approved === 0, 'bg-green-100': reservation.is_approved === 1, 'bg-red-100': reservation.is_approved === 2 }"
+        v-for="reservation in myReservations" :key="reservation.id">
         <div class="flex items-center flex-1 min-w-0">
             <img src="../../assets/calendar.png" alt="calendar"
                 class="flex-shrink-0 object-cover rounded-full btn- w-10 h-10" />
             <div class="mt-0 mr-0 mb-0 ml-4 flex-1 min-w-0">
-                <p class="text-lg truncate">Irvin Lopez - De Ader 2262</p>
-                <p class="text-md">Fecha reserva: <span class="font-bold">02/06/2023</span></p>
-                <small class="text-sm">Aprovado</small>
+                <p class="text-lg truncate">
+                    {{ reservation.user.name }} - {{ `${reservation.house.street.name} ${reservation.house.house_number}` }}
+                </p>
+                <p class="text-md">Fecha reserva: <span class="font-bold">{{ format(new Date(reservation.reservation_date),
+                    'MM/dd/yyyy') }}</span></p>
+                <small class="text-sm">{{ reservation.notes }}</small>
             </div>
         </div>
-        <DangerButton>
-            <i class="bi bi-trash"></i>
-            Borrar
+        <DangerButton @click="deleteReservation(reservation.id)">
+            <i class="bi bi-archive"></i>
+            Archivar
         </DangerButton>
     </div>
 </template>

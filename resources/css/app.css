@@ -92,3 +92,11 @@ body {
 .autocomplete-item:hover {
     background-color: #e9e9e9;
 }
+
+.text-blue {
+    color: #2563eb !important;
+}
+
+.font-xs {
+    font-size: 0.3rem;
+}

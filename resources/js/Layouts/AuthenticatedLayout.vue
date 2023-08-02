@@ -106,7 +106,8 @@ const showingNavigationDropdown = ref(false);
 
                         <div class="mt-3 space-y-1">
                             <ResponsiveNavLink :href="route('profile.edit')"> Perfil </ResponsiveNavLink>
-                            <ResponsiveNavLink :href="route('admin')"> Panel Administrador </ResponsiveNavLink>
+                            <ResponsiveNavLink v-if="$page.props.auth.user.role_id === 1" :href="route('admin')"> Panel
+                                Administrador </ResponsiveNavLink>
                             <ResponsiveNavLink :href="route('logout')" method="post" as="button">
                                 Cerrar sesión
                             </ResponsiveNavLink>
