@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\HouseController;
+use App\Http\Controllers\ConfigController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,7 +25,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations.index');
     Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
-    Route::get('/reservations/{id}', [ReservationController::class, 'show'])->name('reservations.show');
+    Route::get('/reservations/{id}', [ReservationController::class, 'show'])->name('reservations.show')->where('id', '[0-9]+');
     Route::delete('/reservations/{id}', [ReservationController::class, 'destroy'])->name('reservations.destroy');
 });
 
@@ -40,4 +41,12 @@ Route::middleware(['auth:sanctum', 'admin:sanctum'])->group(function () {
     Route::get('/streets', function () {
         return response()->json(\App\Models\Street::all());
     })->name('streets.index');
+
+    Route::get('/configs', [ConfigController::class, 'index'])->name('config.index');
+    Route::put('/configs', [ConfigController::class, 'update'])->name('config.update');
+
+    Route::get('/reservations/approval-requests', [ReservationController::class, 'approvalRequestsList'])->name('reservations.approvalRequestsList');
+    Route::put('/reservations/approval-requests', [ReservationController::class, 'approvalRequests'])->name('reservations.approvalRequests');
+
+    Route::get('/events', [ReservationController::class, 'events'])->name('reservations.events');
 });

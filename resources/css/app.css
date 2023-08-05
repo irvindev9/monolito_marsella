@@ -100,3 +100,21 @@ body {
 .font-xs {
     font-size: 0.3rem;
 }
+
+.welcome-img {
+    width: 25vw;
+    height: 250px; 
+    background-position: center; 
+    background-repeat: no-repeat; 
+    background-size: cover; 
+    background-image: url("../assets/generic.webp");
+}
+
+.welcome-img-2 {
+    width: 25vw;
+    height: 250px; 
+    background-position: center; 
+    background-repeat: no-repeat; 
+    background-size: cover; 
+    background-image: url("../assets/generic.jpeg");
+}

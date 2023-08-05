@@ -44,7 +44,7 @@ onMounted(async () => {
                 <small class="text-sm">{{ reservation.notes }}</small>
             </div>
         </div>
-        <DangerButton @click="deleteReservation(reservation.id)">
+        <DangerButton class="m-1" @click="deleteReservation(reservation.id)">
             <i class="bi bi-archive"></i>
             Archivar
         </DangerButton>

@@ -4,13 +4,13 @@ import LoadingScreen from '@/Components/LoadingScreen.vue';
 import { Head } from '@inertiajs/vue3';
 import { Calendar, DatePicker } from 'v-calendar';
 import { ref, onMounted } from 'vue';
+import { format } from 'date-fns';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { toast } from 'vue3-toastify';
 import Reservation from '@/Components/Reservation.vue';
 
 const isLoading = ref(false);
 const reservations = ref([]);
-const reservationComponent = ref(null);
 
 const attrs = ref([]);
 const pickDate = ref(new Date());
@@ -19,13 +19,14 @@ async function reserveDate() {
     isLoading.value = true;
     try {
         await axios.post('/api/reservations', {
-            reservation_date: pickDate.value,
+            reservation_date: pickDate.value.toDateString(),
         })
         toast.success('Fecha solicitada, en espera de confirmación');
         await getReservations();
         isLoading.value = false;
     } catch (error) {
-        console.log(error);
+        console.error(error.response.data);
+        toast.error(`Error: ${error.response.data[0]}`)
         isLoading.value = false;
     }
 };
@@ -88,7 +89,8 @@ function updateCalendarAttrs() {
         <div class="lg:flex p-3">
             <div class="sm:w-full lg:w-1/4 mx-auto sm:px-3 lg:px-12 mb-5">
                 <Label class="font-bold">Reservar fecha</Label>
-                <DatePicker expanded v-model="pickDate" timezone="America/Mexico_City" />
+                <DatePicker expanded v-model="pickDate" timezone="America/Denver" />
+                Fecha seleccionada: {{ format(pickDate, 'dd/MM/yyyy') }}
                 <PrimaryButton class="my-3" @click="reserveDate">
                     <div v-if="!isLoading">
                         Reservar fecha
@@ -100,7 +102,7 @@ function updateCalendarAttrs() {
             </div>
             <div class="sm:w-full lg:w-3/4 mx-auto sm:px-3 lg:px-12">
                 <Label class="font-bold">Reservaciones</Label>
-                <Calendar expanded :attributes="attrs" timezone="America/Mexico_City" />
+                <Calendar expanded :attributes="attrs" timezone="America/Denver" />
                 <div class="w-full bg-white rounded border border-slate-300 mt-3 p-3">
                     <Label class="font-bold">Representación gráfica de las reservas</Label>
                     <div class="flex space-x-4">

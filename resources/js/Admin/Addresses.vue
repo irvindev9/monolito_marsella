@@ -15,9 +15,13 @@ onMounted(async () => {
 
 async function getAddresses() {
     store.setIsLoading(true);
-    const { data } = await axios.get('/api/addresses')
-    addresses.value = data;
-    createForm.value = false;
+    try {
+        const { data } = await axios.get('/api/addresses')
+        addresses.value = data;
+        createForm.value = false;
+    } catch (error) {
+        console.log(error);
+    }
     setTimeout(() => {
         store.setIsLoading(false);
     }, 500);
