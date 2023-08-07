@@ -90,15 +90,17 @@ function updateCalendarAttrs() {
             <div class="sm:w-full lg:w-1/4 mx-auto sm:px-3 lg:px-12 mb-5">
                 <Label class="font-bold">Reservar fecha</Label>
                 <DatePicker expanded v-model="pickDate" timezone="America/Denver" />
-                Fecha seleccionada: {{ format(pickDate, 'dd/MM/yyyy') }}
-                <PrimaryButton class="my-3" @click="reserveDate">
-                    <div v-if="!isLoading">
-                        Reservar fecha
-                    </div>
-                    <div v-else>
-                        Guardando...
-                    </div>
-                </PrimaryButton>
+                <div class="block">
+                    Fecha seleccionada: {{ pickDate ? format(pickDate, 'dd/MM/yyyy') : '--/--/----' }} <br>
+                    <PrimaryButton class="my-3" @click="reserveDate">
+                        <div v-if="!isLoading">
+                            Reservar fecha
+                        </div>
+                        <div v-else>
+                            Guardando...
+                        </div>
+                    </PrimaryButton>
+                </div>
             </div>
             <div class="sm:w-full lg:w-3/4 mx-auto sm:px-3 lg:px-12">
                 <Label class="font-bold">Reservaciones</Label>

@@ -86,6 +86,10 @@ class ReservationsValidator
             $this->errors[] = 'Solo se puede reservar en el rango de fechas (' . $months . ')';
         }
 
+        if (!$this->isAvailable()) {
+            $this->errors[] = 'Ya hay una reserva para esta fecha';
+        }
+
         return $this->errors;
     }
 
@@ -186,5 +190,13 @@ class ReservationsValidator
             12 => 'Diciembre'
         ];
         return $months[$month];
+    }
+
+    private function isAvailable()
+    {
+
+        return Reservation::where('reservation_date', date('Y-m-d 12:00:00', strtotime($this->dateToReserve)))
+            ->where('is_approved', 1)
+            ->count() == 0;
     }
 }
