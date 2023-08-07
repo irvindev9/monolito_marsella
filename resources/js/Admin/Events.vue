@@ -38,7 +38,7 @@ async function close() {
     <Head title="Eventos" />
     <h3 class="font-bold py-3">Eventos</h3>
 
-    <Records :events="events" v-if="!editForm" @edit="editEvent" />
+    <Records :events="events" v-if="!editForm && events.length > 0" @edit="editEvent" />
 
     <FormRecord :event="event" v-if="editForm" @close="close" />
 </template>

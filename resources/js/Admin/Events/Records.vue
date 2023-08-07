@@ -1,8 +1,11 @@
 <script setup>
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { defineProps, defineEmits } from 'vue';
+import { watchEffect } from 'vue';
+import { defineProps, onMounted, defineEmits, ref, watch } from 'vue';
 import { format } from 'date-fns';
 
+const events = ref([]);
+const filter = ref(null);
 const emit = defineEmits(['edit']);
 const props = defineProps({
     events: {
@@ -14,9 +17,31 @@ const props = defineProps({
 function editEvent(eventId) {
     emit('edit', eventId);
 }
+
+watch(filter, (value) => {
+    if (value === '' || value === null) {
+        events.value = props.events;
+    } else {
+        events.value = props.events.filter(event => {
+            return event.house.street.name.toLowerCase().includes(value.toLowerCase()) ||
+                event.house.house_number.toLowerCase().includes(value.toLowerCase()) ||
+                event.approved_by.name.toLowerCase().includes(value.toLowerCase()) ||
+                format(new Date(event.reservation_date), "dd/MM/yyyy").includes(value.toLowerCase());
+        });
+    }
+});
+
+
+onMounted(() => {
+    events.value = props.events;
+});
 </script>
 
 <template>
+    <div class="block">
+        <label>Buscar: </label>
+        <input class="border rounded p-2 my-2 h-7" type="text" v-model="filter">
+    </div>
     <table class="table-fixed border table-records">
         <thead>
             <tr>
@@ -29,7 +54,7 @@ function editEvent(eventId) {
             </tr>
         </thead>
         <tbody>
-            <tr v-for="event in props.events" :key="event.id">
+            <tr v-for="event in events" :key="event.id">
                 <td class="border p-1">{{ format(new Date(event.reservation_date), "dd/MM/yyyy") }}</td>
                 <td class="border p-1">{{ event.house.street.name }} {{ event.house.house_number }}</td>
                 <td class="border p-1">

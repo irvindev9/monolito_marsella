@@ -35,8 +35,10 @@ onMounted(async () => {
                 </a>
             </li>
             <li class="list-item" @click="store.setActiveTab('clubRequests')">
-                <a href="#">
+                <a href="#" class="relative">
                     <i class="bi bi-calendar-plus"></i> Solicitudes terraza
+                    <span v-if="reservationsPendings > 0"
+                        class="animate-ping absolute inline-flex top-1 h-3 w-3 rounded-full bg-red-400 opacity-75"></span>
                     <span v-if="reservationsPendings > 0"
                         class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
                 </a>

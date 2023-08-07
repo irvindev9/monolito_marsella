@@ -41,7 +41,9 @@ onMounted(async () => {
                 </p>
                 <p class="text-md">Fecha reserva: <span class="font-bold">{{ format(new Date(reservation.reservation_date),
                     'MM/dd/yyyy') }}</span></p>
-                <small class="text-sm">{{ reservation.notes }}</small>
+                <small class="text-sm font-bold">{{ reservation.is_approved === 0 ? 'En espera de aprobación' :
+                    reservation.is_approved === 1 ? 'Aprobado' : 'Rechazado' }}</small> <br>
+                <small class="text-sm" v-if="reservation.notes">Mensaje: {{ reservation.notes }}</small>
             </div>
         </div>
         <DangerButton class="m-1" @click="deleteReservation(reservation.id)">
