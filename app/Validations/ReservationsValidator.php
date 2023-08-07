@@ -46,6 +46,11 @@ class ReservationsValidator
 
     public function validate()
     {
+        if (!$this->houseId) {
+            $this->errors[] = 'No se te ha asignado un domicilio';
+            return $this->errors;
+        }
+
         [$firstMonthOfSeason, $lastMonthOfSeason] = $this->monthsRange();
 
         $this->firstDate = date('Y') . '-' . $firstMonthOfSeason . '-01';
