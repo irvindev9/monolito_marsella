@@ -76,6 +76,11 @@ class ReservationsValidator
             $this->errors[] = 'No se puede reservar para fechas anteriores a hoy';
         }
 
+        if (!$this->isInRange()) {
+            $months = $this->seasonDuration == 1 ? $this->getMonthName($firstMonthOfSeason) : $this->getMonthName($firstMonthOfSeason) . ' - ' . $this->getMonthName($lastMonthOfSeason);
+            $this->errors[] = 'Solo se puede reservar en el rango de fechas (' . $months . ')';
+        }
+
         return $this->errors;
     }
 
@@ -133,7 +138,7 @@ class ReservationsValidator
                 return [11, 12];
 
             default:
-                return [$actualMonth, $actualMonth];
+                return [intval($actualMonth), intval($actualMonth)];
         }
     }
 
@@ -152,5 +157,29 @@ class ReservationsValidator
             ->where('is_approved', 0)
             ->where('is_visible', 1)
             ->get();
+    }
+
+    private function isInRange()
+    {
+        return date('Y-m-d', strtotime($this->dateToReserve)) >= date('Y-m-d', strtotime($this->firstDate)) && date('Y-m-d', strtotime($this->dateToReserve)) <= date('Y-m-d', strtotime($this->secondDate));
+    }
+
+    private function getMonthName($month)
+    {
+        $months = [
+            1 => 'Enero',
+            2 => 'Febrero',
+            3 => 'Marzo',
+            4 => 'Abril',
+            5 => 'Mayo',
+            6 => 'Junio',
+            7 => 'Julio',
+            8 => 'Agosto',
+            9 => 'Septiembre',
+            10 => 'Octubre',
+            11 => 'Noviembre',
+            12 => 'Diciembre'
+        ];
+        return $months[$month];
     }
 }

@@ -1,9 +1,12 @@
 <script setup>
-import PrimaryButton from '@/Components/PrimaryButton.vue';
+import Records from '@/Admin/Events/Records.vue';
 import { Head } from '@inertiajs/vue3';
 import { ref, onMounted } from 'vue';
+import FormRecord from './Events/FormRecord.vue';
 
 const events = ref([]);
+const event = ref(null);
+const editForm = ref(false);
 
 onMounted(async () => {
     await getEvents();
@@ -18,38 +21,24 @@ async function getEvents() {
             console.log(error);
         });
 }
+
+function editEvent(eventId) {
+    event.value = events.value.find(event => event.id === eventId);
+    editForm.value = true;
+}
+
+async function close() {
+    editForm.value = false;
+    event.value = null;
+    await getEvents();
+}
 </script>
 
 <template>
     <Head title="Eventos" />
-    Eventos
+    <h3 class="font-bold py-3">Eventos</h3>
 
-    <table class="table-fixed border table-records">
-        <thead>
-            <tr>
-                <th>Domicilio</th>
-                <th>Deposito</th>
-                <th>Contrato</th>
-                <th>Aprobado por</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="event in events" :key="event.id">
-                <td class="border p-1">{{ event.house.street.name }} {{ event.house.house_number }}</td>
-                <td class="border p-1">
-                    <input type="checkbox" disabled class="appearance-none checked:bg-blue-500 m-auto block"
-                        :checked="event.is_paid" />
-                </td>
-                <td class="border p-1">
-                    <input type="checkbox" disabled class="appearance-none checked:bg-blue-500 m-auto block"
-                        :checked="event.is_signed" />
-                </td>
-                <td class="border p-1">{{ event.approved_by ? event.approved_by.name : '' }}</td>
-                <td class="border p-1 text-center">
-                    <PrimaryButton @click="editEvent(event.id)">Editar</PrimaryButton>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <Records :events="events" v-if="!editForm" @edit="editEvent" />
+
+    <FormRecord :event="event" v-if="editForm" @close="close" />
 </template>

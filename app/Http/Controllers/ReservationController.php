@@ -35,6 +35,16 @@ class ReservationController extends Controller
     }
 
     /**
+     * number of reservations to approve
+     */
+    public function approvalRequestsCount()
+    {
+        $reservations = Reservation::where('is_approved', 0)->where('is_visible', 1)->count();
+
+        return response()->json($reservations);
+    }
+
+    /**
      * Update reservation status
      */
     public function approvalRequests(Request $request)
@@ -120,7 +130,19 @@ class ReservationController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $reservation = Reservation::find($id);
+
+        $reservation->is_signed = $request->is_signed ? 1 : 0;
+
+        $reservation->is_paid = $request->is_paid ? 1 : 0;
+
+        $reservation->notes = $request->notes;
+
+        $reservation->save();
+
+        return response()->json([
+            'message' => 'Reservación actualizada exitosamente',
+        ]);
     }
 
     /**

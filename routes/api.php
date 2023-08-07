@@ -47,6 +47,9 @@ Route::middleware(['auth:sanctum', 'admin:sanctum'])->group(function () {
 
     Route::get('/reservations/approval-requests', [ReservationController::class, 'approvalRequestsList'])->name('reservations.approvalRequestsList');
     Route::put('/reservations/approval-requests', [ReservationController::class, 'approvalRequests'])->name('reservations.approvalRequests');
+    Route::get('/reservations/approval-requests/count', [ReservationController::class, 'approvalRequestsCount'])->name('reservations.approvalRequestsCount');
+
 
     Route::get('/events', [ReservationController::class, 'events'])->name('reservations.events');
+    Route::put('/events/{id}', [ReservationController::class, 'update'])->name('reservations.update');
 });
