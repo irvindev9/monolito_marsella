@@ -48,6 +48,7 @@ Route::middleware(['auth:sanctum', 'admin:sanctum'])->group(function () {
     Route::get('/reservations/approval-requests', [ReservationController::class, 'approvalRequestsList'])->name('reservations.approvalRequestsList');
     Route::put('/reservations/approval-requests', [ReservationController::class, 'approvalRequests'])->name('reservations.approvalRequests');
     Route::get('/reservations/approval-requests/count', [ReservationController::class, 'approvalRequestsCount'])->name('reservations.approvalRequestsCount');
+    Route::post('/reservations/admin', [ReservationController::class, 'storeAdmin'])->name('reservations.storeAdmin');
 
 
     Route::get('/events', [ReservationController::class, 'events'])->name('reservations.events');

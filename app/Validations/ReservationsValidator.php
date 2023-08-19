@@ -93,6 +93,39 @@ class ReservationsValidator
         return $this->errors;
     }
 
+    public function validateAdmin(){
+        if (!$this->houseId) {
+            $this->errors[] = 'No se te ha asignado un domicilio';
+            return $this->errors;
+        }
+
+        [$firstMonthOfSeason, $lastMonthOfSeason] = $this->monthsRange();
+
+        $this->firstDate = date('Y') . '-' . $firstMonthOfSeason . '-01';
+
+        $this->secondDate = date('Y') . '-' . $lastMonthOfSeason . '-31';
+
+        $pendingReservations = $this->getPendingsReservationsByMonth();
+
+        if ($pendingReservations->count() > 0) {
+            $this->errors[] = 'Reserva pendiente de aprobación de este domicilio, rechace la reserva pendiente para poder aprobar esta';
+        }
+        
+        if (date('Y-m-d', strtotime($this->dateToReserve)) < date('Y-m-d')) {
+            $this->errors[] = 'No se puede reservar para fechas anteriores a hoy';
+        }
+
+        if (!$this->isAvailable()) {
+            $this->errors[] = 'Ya hay una reserva para esta fecha';
+        }
+
+        if ($this->existPendingAproval()) {
+            $this->errors[] = 'Ya hay una reserva pendiente de aprobación para esta fecha';
+        }
+
+        return $this->errors;
+    }
+
     private function monthsRange()
     {
         $actualMonth = date('m');
@@ -194,9 +227,15 @@ class ReservationsValidator
 
     private function isAvailable()
     {
-
         return Reservation::where('reservation_date', date('Y-m-d 12:00:00', strtotime($this->dateToReserve)))
             ->where('is_approved', 1)
             ->count() == 0;
+    }
+
+    private function existPendingAproval()
+    {
+        return Reservation::where('reservation_date', date('Y-m-d 12:00:00', strtotime($this->dateToReserve)))
+            ->where('is_approved', 0)
+            ->count() > 0;
     }
 }

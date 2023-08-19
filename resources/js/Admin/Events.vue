@@ -13,6 +13,7 @@ onMounted(async () => {
 });
 
 async function getEvents() {
+    events.value = [];
     await axios.get('/api/events')
         .then(response => {
             events.value = response.data;

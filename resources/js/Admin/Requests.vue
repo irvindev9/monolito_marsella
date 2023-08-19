@@ -2,6 +2,7 @@
 import { Head } from '@inertiajs/vue3';
 import { ref, onMounted } from 'vue';
 import { format } from 'date-fns';
+import { toast } from 'vue3-toastify';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 
@@ -23,11 +24,12 @@ async function getReservationRequests() {
 
 async function updateReservation(reservationId, status) {
     try {
-        await axios.put(`/api/reservations/approval-requests`, {
+        const { data } = await axios.put(`/api/reservations/approval-requests`, {
             id: reservationId,
             is_approved: status
         })
         await getReservationRequests();
+        toast.success(data.message);
     } catch (error) {
         console.log(error);
     }
@@ -44,8 +46,10 @@ async function updateReservation(reservationId, status) {
                 :key="reservation.id">
                 <div class="flex">
                     <div class="w-1/2">
-                        <label class="font-bold" for="title">{{ reservation.user.name }} - {{ reservation.house.street.name
-                        }} {{ reservation.house.house_number }}</label>
+                        <label class="font-bold" for="title">{{ reservation.user ? reservation.user.name : 'Sin usuario' }}
+                            -
+                            {{ reservation.house.street.name
+                            }} {{ reservation.house.house_number }}</label>
                         <p>
                             Fecha de reserva: {{ format(new Date(reservation.reservation_date), "dd/MM/yyyy") }} <br>
                             Fecha de solicitud: {{ format(new Date(reservation.created_at), "dd/MM/yyyy HH:mm:ss") }} <br>

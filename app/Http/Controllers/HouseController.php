@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\House;
+use App\Models\Reservation;
+use App\Models\User;
 
 class HouseController extends Controller
 {
@@ -67,9 +69,15 @@ class HouseController extends Controller
      */
     public function destroy(Request $request)
     {
-        //
-        House::destroy($request->id);
+        $user = User::where('house_id', $request->id)->first();
 
-        return response()->json(['message' => 'House deleted successfully']);
+        if ($user) {
+            return response()->json(['message' => 'No se puede eliminar por que pertenece a un usuario'], 422);
+        }
+
+        House::destroy($request->id);
+        Reservation::where('house_id', $request->id)->delete();
+
+        return response()->json(['message' => 'Dirección eliminada, junto con sus reservaciones']);
     }
 }

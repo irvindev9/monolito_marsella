@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Reservation;
+use App\Models\House;
 use App\Validations\ReservationsValidator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -57,10 +58,16 @@ class ReservationController extends Controller
 
         $reservation->save();
 
-        $this->rejectReservations($reservation->id, $reservation->reservation_date);
+        if ($reservation->is_approved == 1){
+            $this->rejectReservations($reservation->id, $reservation->reservation_date);
+
+            return response()->json([
+                'message' => 'Reservación actualizada exitosamente, las demás reservaciones para esta fecha han sido rechazadas!',
+            ]);
+        }
 
         return response()->json([
-            'message' => 'Reservación actualizada exitosamente, las demás reservaciones para esta fecha han sido rechazadas!',
+            'message' => 'Reservación actualizada exitosamente',
         ]);
     }
 
@@ -97,6 +104,39 @@ class ReservationController extends Controller
             'house_id' => $user->house_id,
             'user_id' => $user->id,
             'reservation_date' => date('Y-m-d 12:00:00', strtotime($request->reservation_date)),
+        ]);
+
+        return response()->json([
+            'message' => 'Reservación creada exitosamente',
+            'reservation' => $request->reservation_date,
+        ]);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function storeAdmin(Request $request)
+    {
+
+        $newHouse = House::updateOrCreate([
+            'street_id' => $request->street_id,
+            'house_number' => $request->house_number,
+        ]);
+
+        $validator = new ReservationsValidator($newHouse->id, $request->reservation_date);
+
+        $errors = $validator->validateAdmin();
+
+        if ($errors) {
+            return response()->json($errors, 422);
+        }
+
+        Reservation::create([
+            'house_id' => $newHouse->id,
+            'user_id' => null,
+            'reservation_date' => date('Y-m-d 12:00:00', strtotime($request->reservation_date)),
+            'is_approved' => 1,
+            'approved_by' => $request->user()->id,
         ]);
 
         return response()->json([

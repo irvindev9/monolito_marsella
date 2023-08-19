@@ -37,7 +37,8 @@ onMounted(async () => {
                 class="flex-shrink-0 object-cover rounded-full btn- w-10 h-10" />
             <div class="mt-0 mr-0 mb-0 ml-4 flex-1 min-w-0">
                 <p class="text-lg truncate">
-                    {{ reservation.user.name }} - {{ `${reservation.house.street.name} ${reservation.house.house_number}` }}
+                    {{ reservation.user ? reservation.user.name : 'Registrado por comité' }} - {{
+                        `${reservation.house.street.name} ${reservation.house.house_number}` }}
                 </p>
                 <p class="text-md">Fecha reserva: <span class="font-bold">{{ format(new Date(reservation.reservation_date),
                     'MM/dd/yyyy') }}</span></p>

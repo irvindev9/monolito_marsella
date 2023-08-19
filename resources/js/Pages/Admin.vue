@@ -5,6 +5,7 @@ import Users from '@/Admin/Users.vue';
 import Addresses from '@/Admin/Addresses.vue';
 import Club from '@/Admin/Club.vue';
 import Events from '@/Admin/Events.vue';
+import AddEvent from '@/Admin/AddEvent.vue';
 import Requests from '@/Admin/Requests.vue';
 import { Head } from '@inertiajs/vue3';
 import { computed } from 'vue';
@@ -38,6 +39,8 @@ const activeTab = computed(() => store.activeTab);
                 <Requests v-if="activeTab === 'clubRequests'" />
 
                 <Events v-if="activeTab === 'events'" />
+
+                <AddEvent v-if="activeTab === 'addEvent'" />
             </div>
         </div>
         <LoadingScreen :show="isLoading" />

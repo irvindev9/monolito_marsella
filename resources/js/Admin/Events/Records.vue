@@ -1,6 +1,5 @@
 <script setup>
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { watchEffect } from 'vue';
 import { defineProps, onMounted, defineEmits, ref, watch } from 'vue';
 import { format } from 'date-fns';
 
@@ -23,10 +22,15 @@ watch(filter, (value) => {
         events.value = props.events;
     } else {
         events.value = props.events.filter(event => {
-            return event.house.street.name.toLowerCase().includes(value.toLowerCase()) ||
-                event.house.house_number.toLowerCase().includes(value.toLowerCase()) ||
-                event.approved_by.name.toLowerCase().includes(value.toLowerCase()) ||
-                format(new Date(event.reservation_date), "dd/MM/yyyy").includes(value.toLowerCase());
+            if (event.house && event.house.street && event.house.house_number) {
+                return event.house.street?.name.toLowerCase().includes(value.toLowerCase()) ||
+                    event.house.house_number?.toLowerCase().includes(value.toLowerCase()) ||
+                    event.approved_by?.name.toLowerCase().includes(value.toLowerCase()) ||
+                    format(new Date(event.reservation_date), "dd/MM/yyyy").includes(value.toLowerCase());
+            } else {
+                return event.approved_by?.name.toLowerCase().includes(value.toLowerCase()) ||
+                    format(new Date(event.reservation_date), "dd/MM/yyyy").includes(value.toLowerCase());
+            }
         });
     }
 });
@@ -56,7 +60,9 @@ onMounted(() => {
         <tbody>
             <tr v-for="event in events" :key="event.id">
                 <td class="border p-1">{{ format(new Date(event.reservation_date), "dd/MM/yyyy") }}</td>
-                <td class="border p-1">{{ event.house.street.name }} {{ event.house.house_number }}</td>
+                <td class="border p-1">
+                    <div v-if="event.house">{{ event.house.street.name ?? '' }} {{ event.house.house_number ?? '' }}</div>
+                </td>
                 <td class="border p-1">
                     <input type="checkbox" disabled class="appearance-none checked:bg-blue-500 m-auto block"
                         :checked="event.is_paid" />

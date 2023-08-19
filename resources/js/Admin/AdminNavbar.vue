@@ -48,6 +48,11 @@ onMounted(async () => {
                     <i class="bi bi-calendar-event"></i> Eventos
                 </a>
             </li>
+            <li class="list-item" @click="store.setActiveTab('addEvent')">
+                <a href="#">
+                    <i class="bi bi-pen"></i> Crear evento
+                </a>
+            </li>
         </ul>
     </div>
 </template>

@@ -11,6 +11,7 @@ const form = useForm({
     email: '',
     password: '',
     password_confirmation: '',
+    phone: '',
 });
 
 const submit = () => {
@@ -60,6 +61,15 @@ const submit = () => {
                     v-model="form.password_confirmation" required autocomplete="new-password" />
 
                 <InputError class="mt-2" :message="form.errors.password_confirmation" />
+            </div>
+
+            <div class="mt-4">
+                <InputLabel for="phone" value="Teléfono / Whatsapp" />
+
+                <TextInput id="phone" type="text" class="mt-1 block w-full" v-model="form.phone" required autofocus
+                    autocomplete="phone" />
+
+                <InputError class="mt-2" :message="form.errors.phone" />
             </div>
 
             <div class="flex items-center justify-end mt-4">

@@ -61,7 +61,8 @@ function close() {
                     </label>
                     <input type="text"
                         class="border rounded p-2 disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none"
-                        readonly disabled :value="props.event.house.street.name + ' ' + props.event.house.house_number" />
+                        readonly disabled
+                        :value="(props.event.house) ? props.event.house.street.name + ' ' + props.event.house.house_number : ''" />
                 </div>
             </div>
             <div class="w-1/3 px-1">
@@ -71,7 +72,7 @@ function close() {
                     </label>
                     <input type="text"
                         class="border rounded p-2 disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none"
-                        readonly disabled :value="props.event.user.name" />
+                        readonly disabled :value="(props.event.user) ? props.event.user.name : ''" />
                 </div>
             </div>
         </div>
@@ -84,7 +85,7 @@ function close() {
                     <input type="text"
                         class="border rounded p-2 disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none"
                         readonly disabled
-                        :value="format(new Date(props.event.approved_by.created_at), 'dd/MM/yyyy HH:mm:ss')" />
+                        :value="(props.event.approved_by) ? format(new Date(props.event.approved_by.created_at), 'dd/MM/yyyy HH:mm:ss') : ''" />
                 </div>
             </div>
             <div class="w-1/3 px-1">
@@ -94,7 +95,7 @@ function close() {
                     </label>
                     <input type="text"
                         class="border rounded p-2 disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none"
-                        readonly disabled :value="props.event.approved_by.name" />
+                        readonly disabled :value="(props.event.approved_by) ? props.event.approved_by.name : ''" />
                 </div>
             </div>
             <div class="w-1/3 px-1">
@@ -104,7 +105,7 @@ function close() {
                     </label>
                     <textarea
                         class="border rounded p-2 disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none"
-                        v-model="props.event.notes"></textarea>
+                        v-model="props.event.notes" rows="5"></textarea>
                 </div>
             </div>
         </div>

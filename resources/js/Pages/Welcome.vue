@@ -74,9 +74,10 @@ defineProps({
 
                 </div>
 
-                <div class="ml-4 text-center text-sm text-gray-500 dark:text-gray-400 sm:text-right sm:ml-0">
+                <a href="http://irvin-lopez.com" target="_blank"
+                    class="ml-4 text-center text-sm text-gray-500 dark:text-gray-400 sm:text-right sm:ml-0">
                     <i class="bi bi-lightning-charge"></i> Irvin Raúl López
-                </div>
+                </a>
             </div>
         </div>
     </div>
