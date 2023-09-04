@@ -49,6 +49,7 @@ Route::middleware(['auth:sanctum', 'admin:sanctum'])->group(function () {
     Route::put('/reservations/approval-requests', [ReservationController::class, 'approvalRequests'])->name('reservations.approvalRequests');
     Route::get('/reservations/approval-requests/count', [ReservationController::class, 'approvalRequestsCount'])->name('reservations.approvalRequestsCount');
     Route::post('/reservations/admin', [ReservationController::class, 'storeAdmin'])->name('reservations.storeAdmin');
+    Route::delete('/reservations/admin/{id}', [ReservationController::class, 'remove'])->name('reservations.removeAdmin');
 
 
     Route::get('/events', [ReservationController::class, 'events'])->name('reservations.events');

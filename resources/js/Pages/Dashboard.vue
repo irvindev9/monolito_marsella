@@ -109,7 +109,7 @@ function updateCalendarAttrs() {
                     <Label class="font-bold">Representación gráfica de las reservas</Label>
                     <div class="flex space-x-4">
                         <div>
-                            <i class="bi bi-5-circle-fill text-blue"></i> Reservado
+                            <i class="bi bi-circle-fill text-blue"></i> Reservado
                         </div>
                         <div>
                             <i class="bi bi-circle-fill text-xs text-blue font-xs"></i> En espera de aprobación

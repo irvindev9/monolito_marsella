@@ -39,6 +39,16 @@ async function updateEvent() {
 function close() {
     emit('close');
 }
+
+async function remove() {
+    const confirm = window.confirm('¿Estás seguro de borrar este evento?, esta acción no se puede deshacer');
+
+    if (!confirm) return;
+
+    const { data } = await axios.delete('/api/reservations/admin/' + props.event.id);
+    toast.success(data.message);
+    emit('close');
+}
 </script>
 
 <template>
@@ -131,8 +141,11 @@ function close() {
             <PrimaryButton class="m-1" @click="updateEvent">
                 Guardar
             </PrimaryButton>
-            <DangerButton class="m-1" @click="close">
+            <PrimaryButton class="m-1" @click="close">
                 Cancelar
+            </PrimaryButton>
+            <DangerButton class="m-1" @click="remove">
+                <i class="bi bi-calendar-x"></i> Borrar
             </DangerButton>
         </div>
     </div>

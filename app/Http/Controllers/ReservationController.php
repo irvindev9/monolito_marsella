@@ -192,6 +192,14 @@ class ReservationController extends Controller
     {
         $reservation = Reservation::find($id);
 
+        if ($reservation->is_approved == 0) {
+            $reservation->delete();
+
+            return response()->json([
+                'message' => 'Reservación eliminada exitosamente',
+            ]);
+        }
+        
         $reservation->is_visible = 0;
 
         $reservation->save();
@@ -199,5 +207,24 @@ class ReservationController extends Controller
         return response()->json([
             'message' => 'Reservación archivada exitosamente',
         ]);
+    }
+
+    /**
+     * Admin remove reservation
+     */
+
+    public function remove(string $id)
+    {
+        if($reservation = Reservation::find($id)) {
+            $reservation->delete();
+
+            return response()->json([
+                'message' => 'Reservación eliminada exitosamente',
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Reservación no encontrada',
+        ], 404);
     }
 }

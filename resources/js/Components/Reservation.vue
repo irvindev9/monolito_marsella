@@ -48,8 +48,14 @@ onMounted(async () => {
             </div>
         </div>
         <DangerButton class="m-1" @click="deleteReservation(reservation.id)">
-            <i class="bi bi-archive"></i>
-            Archivar
+            <div v-if="reservation.is_approved != 0">
+                <i class="bi bi-archive"></i>
+                Archivar
+            </div>
+            <div v-else>
+                <i class="bi bi-trash"></i>
+                Eliminar/Cancelar
+            </div>
         </DangerButton>
     </div>
 </template>
