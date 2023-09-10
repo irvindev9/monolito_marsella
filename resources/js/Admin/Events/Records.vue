@@ -5,11 +5,16 @@ import { format } from 'date-fns';
 
 const events = ref([]);
 const filter = ref(null);
-const emit = defineEmits(['edit']);
+const emit = defineEmits(['edit', 'getEvents']);
 const props = defineProps({
     events: {
         type: Array,
         required: true
+    },
+    showAll: {
+        type: Boolean,
+        required: false,
+        default: false
     }
 });
 
@@ -39,12 +44,19 @@ watch(filter, (value) => {
 onMounted(() => {
     events.value = props.events;
 });
+
+function getEvents(value) {
+    emit('getEvents', value);
+}
 </script>
 
 <template>
     <div class="block">
         <label>Buscar: </label>
         <input class="border rounded p-2 my-2 h-7" type="text" v-model="filter">
+    </div>
+    <div class="w-full text-end mb-1">
+        <button class="btn rounded bg-slate-50 p-1 px-2 hover:bg-slate-100" @click="getEvents(!props.showAll)">{{props.showAll ? 'Ver proximos eventos' : 'Ver todos'}}</button>
     </div>
     <table class="table-fixed border table-records">
         <thead>

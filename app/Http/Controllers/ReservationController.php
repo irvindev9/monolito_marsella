@@ -158,9 +158,17 @@ class ReservationController extends Controller
     /**
      * Return the list of reservations approved
      */
-    public function events()
+    public function events(Request $request)
     {
-        $reservations = Reservation::where('is_approved', 1)->with(['house.street', 'user', 'approvedBy'])->get();
+        $reservations = Reservation::where('is_approved', 1);
+
+        if ($request->showAll == false || $request->showAll == 'false' || !isset($request->showAll ) ) {
+            $reservations = $reservations->where('reservation_date', '>=', date('Y-m-d 12:00:00'));
+        }
+
+        $reservations = $reservations->with(['house.street', 'user', 'approvedBy'])
+            ->orderBy('reservation_date', 'asc')->get();
+        
 
         return response()->json($reservations);
     }
