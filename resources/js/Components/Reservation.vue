@@ -45,6 +45,20 @@ onMounted(async () => {
                 <small class="text-sm font-bold">{{ reservation.is_approved === 0 ? 'En espera de aprobación' :
                     reservation.is_approved === 1 ? 'Aprobado' : 'Rechazado' }}</small> <br>
                 <small class="text-sm" v-if="reservation.notes">Mensaje: {{ reservation.notes }}</small>
+                <p>
+                    <small>
+                        <i v-if="!reservation.is_signed" class="bi bi-exclamation-circle"></i>
+                        {{ reservation.is_signed ? 'Contrato entregado' : 'Pendiente de entregar ' }}
+                        <a v-if="!reservation.is_signed" href="/documents/Contrato.pdf"
+                            class="text-blue-500 hover:text-blue-700">
+                            contrato
+                        </a></small>
+                    <br>
+                    <small>
+                        <i v-if="!reservation.is_paid" class="bi bi-exclamation-circle"></i>
+                        {{ reservation.is_paid ? 'Pago realizado' : 'Pago pendiente' }}
+                    </small>
+                </p>
             </div>
         </div>
         <DangerButton class="m-1" @click="deleteReservation(reservation.id)">
