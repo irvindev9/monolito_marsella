@@ -56,14 +56,15 @@ function getEvents(value) {
         <input class="border rounded p-2 my-2 h-7" type="text" v-model="filter">
     </div>
     <div class="w-full text-end mb-1">
-        <button class="btn rounded bg-slate-50 p-1 px-2 hover:bg-slate-100" @click="getEvents(!props.showAll)">{{props.showAll ? 'Ver proximos eventos' : 'Ver todos'}}</button>
+        <button class="btn rounded bg-slate-50 p-1 px-2 hover:bg-slate-100"
+            @click="getEvents(!props.showAll)">{{ props.showAll ? 'Ver proximos eventos' : 'Ver todos' }}</button>
     </div>
     <table class="table-fixed border table-records">
         <thead>
             <tr>
                 <th>Fecha</th>
                 <th>Domicilio</th>
-                <th>Deposito</th>
+                <th>Pago</th>
                 <th>Contrato</th>
                 <th>Aprobado por</th>
                 <th>Acciones</th>

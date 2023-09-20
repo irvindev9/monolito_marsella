@@ -123,7 +123,7 @@ async function remove() {
             <div class="w-1/3 px-1">
                 <div class="flex flex-col">
                     <label class="font-bold my-3">
-                        Entregó deposito
+                        Entregó pago
                     </label>
                     <input type="checkbox" class="appearance-none checked:bg-blue-500" v-model="isPaid" />
                 </div>
