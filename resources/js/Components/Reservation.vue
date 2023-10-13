@@ -33,8 +33,7 @@ onMounted(async () => {
         :class="{ 'bg-gray-100': reservation.is_approved === 0, 'bg-green-100': reservation.is_approved === 1, 'bg-red-100': reservation.is_approved === 2 }"
         v-for="reservation in myReservations" :key="reservation.id">
         <div class="flex items-center flex-1 min-w-0">
-            <img src="../../assets/calendar.png" alt="calendar"
-                class="flex-shrink-0 object-cover rounded-full btn- w-10 h-10" />
+            <i class="bi bi-calendar4-week flex-shrink-0 object-cover rounded-full m-3"></i>
             <div class="mt-0 mr-0 mb-0 ml-4 flex-1 min-w-0">
                 <p class="text-lg truncate">
                     {{ reservation.user ? reservation.user.name : 'Registrado por comité' }} - {{
@@ -42,6 +41,12 @@ onMounted(async () => {
                 </p>
                 <p class="text-md">Fecha reserva: <span class="font-bold">{{ format(new Date(reservation.reservation_date),
                     'MM/dd/yyyy') }}</span></p>
+                <p class="text-sm">
+                    <small>
+                        Solicitud hecha el <span class="font-bold">{{ format(new Date(reservation.created_at),
+                            'MM/dd/yyyy') }}</span>
+                    </small>
+                </p>
                 <small class="text-sm font-bold">{{ reservation.is_approved === 0 ? 'En espera de aprobación' :
                     reservation.is_approved === 1 ? 'Aprobado' : 'Rechazado' }}</small> <br>
                 <small class="text-sm" v-if="reservation.notes">Mensaje: {{ reservation.notes }}</small>

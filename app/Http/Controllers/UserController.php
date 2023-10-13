@@ -60,6 +60,10 @@ class UserController extends Controller
             $user->house_id = $request->house_id;
         }
 
+        if ($request->has('phone')) {
+            $user->phone = $request->phone;
+        }
+
         $user->save();
 
         return response()->json(['message' => 'User updated successfully']);

@@ -63,6 +63,7 @@ async function saveAddress() {
 
     await axios.put(`/api/users/${props.editUser.id}`, {
         house_id: selectAddress.value,
+        phone: props.editUser.phone,
     });
 
     toast.success('Domicilio asignado');
@@ -114,10 +115,18 @@ async function saveAddress() {
                     </div>
                 </div>
             </div>
+            <div class="w-1/2 px-1">
+                <div class="flex flex-col">
+                    <label class="font-bold my-3">
+                        Teléfono
+                    </label>
+                    <input type="text" class="border rounded p-2 read-only:bg-gray-100" v-model="editUser.phone" />
+                </div>
+            </div>
         </div>
         <div class="flex flex-row-reverse">
             <PrimaryButton class="mt-1" @click="saveAddress">
-                Agregar
+                Guardar
             </PrimaryButton>
             <DangerButton class="mt-1 mx-1" @click="emit('close')">
                 Cancelar

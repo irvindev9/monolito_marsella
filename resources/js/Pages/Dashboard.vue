@@ -18,10 +18,10 @@ const pickDate = ref(new Date());
 async function reserveDate() {
     isLoading.value = true;
     try {
-        await axios.post('/api/reservations', {
+        const { data } = await axios.post('/api/reservations', {
             reservation_date: pickDate.value.toDateString(),
         })
-        toast.success('Fecha solicitada, en espera de confirmación');
+        toast.success(`${data.message} - Fecha reservada: ${data.reservation_date}`);
         await getReservations();
         isLoading.value = false;
     } catch (error) {

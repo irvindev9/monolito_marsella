@@ -107,8 +107,8 @@ class ReservationController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'Reservación creada exitosamente',
-            'reservation' => $request->reservation_date,
+            'message' => 'Fecha solicitada, en espera de confirmación',
+            'reservation_date' => date('Y-m-d', strtotime($request->reservation_date)),
         ]);
     }
 
