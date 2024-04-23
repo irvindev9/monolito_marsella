@@ -64,6 +64,7 @@ async function saveAddress() {
     await axios.put(`/api/users/${props.editUser.id}`, {
         house_id: selectAddress.value,
         phone: props.editUser.phone,
+        password: props.editUser.password,
     });
 
     toast.success('Domicilio asignado');
@@ -121,6 +122,14 @@ async function saveAddress() {
                         Teléfono
                     </label>
                     <input type="text" class="border rounded p-2 read-only:bg-gray-100" v-model="editUser.phone" />
+                </div>
+            </div>
+            <div class="w-1/2 px-1">
+                <div class="flex flex-col">
+                    <label class="font-bold my-3">
+                        Nuevo Password
+                    </label>
+                    <input type="password" class="border rounded p-2 read-only:bg-gray-100" v-model="editUser.password" />
                 </div>
             </div>
         </div>

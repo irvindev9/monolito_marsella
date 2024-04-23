@@ -64,6 +64,10 @@ class UserController extends Controller
             $user->phone = $request->phone;
         }
 
+        if ($request->has('password') && $request->password != null && $request->password != '') {
+            $user->password = bcrypt($request->password);
+        }
+
         $user->save();
 
         return response()->json(['message' => 'User updated successfully']);
