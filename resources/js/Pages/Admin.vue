@@ -7,6 +7,8 @@ import Club from '@/Admin/Club.vue';
 import Events from '@/Admin/Events.vue';
 import AddEvent from '@/Admin/AddEvent.vue';
 import Requests from '@/Admin/Requests.vue';
+import Restrictions from '@/Admin/Restrictions.vue';
+import RestrictionList from '@/Admin/RestrictionList.vue';
 import { Head } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import { useAdminStore } from '@/Stores/adminStore';
@@ -41,6 +43,10 @@ const activeTab = computed(() => store.activeTab);
                 <Events v-if="activeTab === 'events'" />
 
                 <AddEvent v-if="activeTab === 'addEvent'" />
+
+                <Restrictions v-if="activeTab === 'restrictions'" />
+
+                <RestrictionList v-if="activeTab === 'restrictionsList'" />
             </div>
         </div>
         <LoadingScreen :show="isLoading" />

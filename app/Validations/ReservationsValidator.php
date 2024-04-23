@@ -4,6 +4,7 @@ namespace App\Validations;
 
 use App\Models\Config;
 use App\Models\Reservation;
+use App\Models\Restriction;
 
 class ReservationsValidator
 {
@@ -22,6 +23,8 @@ class ReservationsValidator
     private $dateToReserve;
 
     private $errors = [];
+
+    private $restrictions;
 
     public function __construct($houseId, $dateToReserve)
     {
@@ -42,6 +45,11 @@ class ReservationsValidator
         $this->IsRegisterOpen = $config->filter(function ($value) {
             return $value->slug == 'iro';
         })->first()->setting;
+
+        $this->restrictions = Restriction::where('house_id', $this->houseId)
+            ->where('block_date_end', '>=', date('Y-m-d 12:00:00'))
+            ->where('is_active', 1)
+            ->get();
     }
 
     public function validate()
@@ -49,6 +57,13 @@ class ReservationsValidator
         if (!$this->houseId) {
             $this->errors[] = 'No se te ha asignado un domicilio';
             return $this->errors;
+        }
+
+        foreach ($this->restrictions as $restriction) {
+            if (date('Y-m-d', strtotime($this->dateToReserve)) >= date('Y-m-d', strtotime($restriction->block_date_start)) && date('Y-m-d', strtotime($this->dateToReserve)) <= date('Y-m-d', strtotime($restriction->block_date_end))) {
+                $this->errors[] = 'Tienes un bloqueo activo, podras reservar a partir del ' . date('Y-m-d', strtotime($restriction->block_date_end)) . ' por la razón: ' . $restriction->reason;
+                break;
+            }
         }
 
         [$firstMonthOfSeason, $lastMonthOfSeason] = $this->monthsRange();

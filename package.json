@@ -2,7 +2,7 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "dev": "vite",
+        "dev": "vite --host",
         "build": "vite build"
     },
     "devDependencies": {
@@ -20,6 +20,7 @@
     "dependencies": {
         "@inertiajs/inertia": "^0.11.1",
         "@popperjs/core": "^2.11.8",
+        "bootstrap": "^5.3.1",
         "bootstrap-icons": "^1.10.5",
         "date-fns": "^2.30.0",
         "epic-spinners": "^2.0.0",

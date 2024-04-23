@@ -53,6 +53,16 @@ onMounted(async () => {
                     <i class="bi bi-pen"></i> Crear evento
                 </a>
             </li>
+            <li class="list-item" @click="store.setActiveTab('restrictions')">
+                <a href="#">
+                    <i class="bi bi-person-lock"></i> Bloqueos
+                </a>
+            </li>
+            <li class="list-item" @click="store.setActiveTab('restrictionsList')">
+                <a href="#">
+                    <i class="bi bi-house-lock"></i> Lista de bloqueos
+                </a>
+            </li>
         </ul>
     </div>
 </template>
