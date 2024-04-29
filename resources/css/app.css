@@ -107,7 +107,7 @@ body {
     background-position: center; 
     background-repeat: no-repeat; 
     background-size: cover; 
-    background-image: url("../assets/generic.webp");
+    background-image: url("../assets/terraza1.jpeg");
 }
 
 
@@ -117,7 +117,7 @@ body {
     background-position: center; 
     background-repeat: no-repeat; 
     background-size: cover; 
-    background-image: url("../assets/generic.jpeg");
+    background-image: url("../assets/terraza2.jpeg");
 }
 
 @media screen and (max-width: 768px) {
@@ -127,7 +127,7 @@ body {
         background-position: center; 
         background-repeat: no-repeat; 
         background-size: cover; 
-        background-image: url("../assets/generic.webp");
+        background-image: url("../assets/terraza1.jpeg");
     }
 
     .welcome-img-2 {
@@ -136,6 +136,6 @@ body {
         background-position: center; 
         background-repeat: no-repeat; 
         background-size: cover; 
-        background-image: url("../assets/generic.jpeg");
+        background-image: url("../assets/terraza2.jpeg");
     }
 }
