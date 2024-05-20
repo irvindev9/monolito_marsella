@@ -8,6 +8,10 @@ import { format } from 'date-fns';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { toast } from 'vue3-toastify';
 import Reservation from '@/Components/Reservation.vue';
+import { ModalsContainer, useModal } from 'vue-final-modal'
+import ModalTerms from '@/Modals/Terms.vue';
+
+
 
 const isLoading = ref(false);
 const reservations = ref([]);
@@ -30,6 +34,21 @@ async function reserveDate() {
         isLoading.value = false;
     }
 };
+
+const { open, close } = useModal({
+    component: ModalTerms,
+    attrs: {
+        async onConfirm() {
+            console.log('confirmed')
+            await reserveDate();
+            close();
+        },
+        onClose() {
+            console.log('closed')
+            close()
+        }
+    },
+})
 
 async function getReservations() {
     try {
@@ -92,7 +111,7 @@ function updateCalendarAttrs() {
                 <DatePicker expanded v-model="pickDate" timezone="America/Denver" />
                 <div class="block">
                     Fecha seleccionada: {{ pickDate ? format(pickDate, 'dd/MM/yyyy') : '--/--/----' }} <br>
-                    <PrimaryButton class="my-3" @click="reserveDate">
+                    <PrimaryButton class="my-3" @click="open">
                         <div v-if="!isLoading">
                             Reservar fecha
                         </div>
@@ -126,5 +145,6 @@ function updateCalendarAttrs() {
             </div>
         </div>
         <LoadingScreen :show="isLoading" />
+        <ModalsContainer />
     </AuthenticatedLayout>
 </template>
