@@ -28,6 +28,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
     Route::get('/reservations/{id}', [ReservationController::class, 'show'])->name('reservations.show')->where('id', '[0-9]+');
     Route::delete('/reservations/{id}', [ReservationController::class, 'destroy'])->name('reservations.destroy');
+
+    Route::get('/house', [HouseController::class, 'getHouse'])->name('house.getHouse');
 });
 
 Route::middleware(['auth:sanctum', 'admin:sanctum'])->group(function () {

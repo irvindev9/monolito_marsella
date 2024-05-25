@@ -11,7 +11,6 @@ onMounted(async () => {
 });
 
 async function removeRestriction(restrictionId, isActive) {
-    console.log(`/api/restrictions/admin/${restrictionId}`);
     await axios.put(`/api/restrictions/admin/${restrictionId}`, {
         is_active: isActive ? 1 : 0
     })

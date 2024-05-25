@@ -24,6 +24,7 @@ async function reserveDate() {
     try {
         const { data } = await axios.post('/api/reservations', {
             reservation_date: pickDate.value.toDateString(),
+            acceptTerms: 1,
         })
         toast.success(`${data.message} - Fecha reservada: ${data.reservation_date}`);
         await getReservations();
@@ -39,14 +40,13 @@ const { open, close } = useModal({
     component: ModalTerms,
     attrs: {
         async onConfirm() {
-            console.log('confirmed')
             await reserveDate();
             close();
         },
         onClose() {
-            console.log('closed')
             close()
-        }
+        },
+        selectedDate: pickDate,
     },
 })
 

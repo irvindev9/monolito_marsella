@@ -65,6 +65,17 @@ class HouseController extends Controller
     }
 
     /**
+     * Get users house
+     */
+
+    public function getHouse(Request $request)
+    {
+        $house = House::where('id', $request->user()->house_id)->with('street')->first();
+
+        return response()->json($house);
+    }
+
+    /**
      * Remove the specified resource from storage.
      */
     public function destroy(Request $request)

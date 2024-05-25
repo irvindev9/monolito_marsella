@@ -103,6 +103,7 @@ class ReservationController extends Controller
         Reservation::create([
             'house_id' => $user->house_id,
             'user_id' => $user->id,
+            'is_signed' => $request->acceptTerms,
             'reservation_date' => date('Y-m-d 12:00:00', strtotime($request->reservation_date)),
         ]);
 
