@@ -63,6 +63,11 @@ onMounted(async () => {
                     <i class="bi bi-house-lock"></i> Lista de bloqueos
                 </a>
             </li>
+            <li class="list-item" @click="store.setActiveTab('directory')">
+                <a href="#">
+                    <i class="bi bi-journal-medical"></i> Directorio
+                </a>
+            </li>
         </ul>
     </div>
 </template>

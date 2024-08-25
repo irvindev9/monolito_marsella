@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\HouseController;
 use App\Http\Controllers\ConfigController;
 use App\Http\Controllers\RestrictionController;
+use App\Http\Controllers\DirectoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -61,4 +62,6 @@ Route::middleware(['auth:sanctum', 'admin:sanctum'])->group(function () {
     Route::post('/restrictions/admin', [RestrictionController::class, 'store'])->name('restrictions.store');
     Route::get('/restrictions/admin', [RestrictionController::class, 'index'])->name('restrictions.index');
     Route::put('/restrictions/admin/{id}', [RestrictionController::class, 'update'])->name('restrictions.update');
+
+    Route::post('/directory', [DirectoryController::class, 'store'])->name('directory.store');
 });

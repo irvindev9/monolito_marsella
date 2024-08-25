@@ -9,6 +9,7 @@ import AddEvent from '@/Admin/AddEvent.vue';
 import Requests from '@/Admin/Requests.vue';
 import Restrictions from '@/Admin/Restrictions.vue';
 import RestrictionList from '@/Admin/RestrictionList.vue';
+import Directory from '@/Admin/Directory.vue';
 import { Head } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import { useAdminStore } from '@/Stores/adminStore';
@@ -47,6 +48,8 @@ const activeTab = computed(() => store.activeTab);
                 <Restrictions v-if="activeTab === 'restrictions'" />
 
                 <RestrictionList v-if="activeTab === 'restrictionsList'" />
+
+                <Directory v-if="activeTab === 'directory'" />
             </div>
         </div>
         <LoadingScreen :show="isLoading" />
