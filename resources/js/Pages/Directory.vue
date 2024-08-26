@@ -40,7 +40,7 @@ async function getUserDirectory() {
                         <p class="card-text"><small class="text-body-secondary">{{ (user.description && user.description !=
                             'null') ? user.description : '' }}</small>
                         </p>
-                        <a :href="`https://api.whatsapp.com/send?phone=521${user.phone}`" target="_blank">
+                        <a v-if="user.phone" :href="`https://api.whatsapp.com/send?phone=521${user.phone}`" target="_blank">
                             <i class="bi bi-whatsapp"></i> {{ user.phone }}
                         </a>
                     </div>
