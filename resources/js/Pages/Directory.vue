@@ -1,24 +1,47 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import axios from 'axios';
+import { ref, onMounted } from 'vue';
+
+const userDirectory = ref([]);
+const message = ref(null);
+
+onMounted(async () => {
+    await getUserDirectory();
+});
+
+async function getUserDirectory() {
+    try {
+        const { data } = await axios.get('/api/directory/public');
+        userDirectory.value = data.directories;
+        message.value = data.message;
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 </script>
 
 <template>
     <AuthenticatedLayout>
-        <div class="card mb-3" v-for="n in 10">
+        <div v-if="message" class="alert alert-warning" role="alert">
+            {{ message }}
+        </div>
+        <div v-else class="card mb-3" v-for="user in userDirectory" :key="user.id">
             <div class="row g-0">
                 <div class="col-md-4">
-                    <img src="https://picsum.photos/200" class="img-fluid rounded-start" alt="IMAGE">
+                    <img v-if="user.photo" :src="user.photo" class="img-fluid rounded-start" alt="IMAGE">
+                    <img v-else src="../../assets/nophoto.jpg" class="img-fluid rounded-start" alt="IMAGE">
                 </div>
                 <div class="col-md-8">
                     <div class="card-body">
-                        <h5 class="card-title">Secretario</h5>
-                        <p class="card-text">Irvin Raul Lopez Contreras</p>
-                        <p class="card-text"><small class="text-body-secondary">Responsable de tomar notas en las juntas
-                                vecinales. Responsable del sitio versallesmarsella.com</small>
+                        <h5 class="card-title">{{ user.position }}</h5>
+                        <p class="card-text">{{ user.name }}</p>
+                        <p class="card-text"><small class="text-body-secondary">{{ (user.description && user.description !=
+                            'null') ? user.description : '' }}</small>
                         </p>
-                        <a href="https://api.whatsapp.com/send?phone=5216565340038" target="_blank">
-                            <i class="bi bi-whatsapp"></i>
+                        <a :href="`https://api.whatsapp.com/send?phone=521${user.phone}`" target="_blank">
+                            <i class="bi bi-whatsapp"></i> {{ user.phone }}
                         </a>
                     </div>
                 </div>
@@ -120,5 +143,11 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
 .bi-whatsapp {
     color: #25d366;
+}
+
+.alert {
+    margin: 20px;
+    text-align: center;
+    font-size: large;
 }
 </style>

@@ -31,6 +31,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/reservations/{id}', [ReservationController::class, 'destroy'])->name('reservations.destroy');
 
     Route::get('/house', [HouseController::class, 'getHouse'])->name('house.getHouse');
+
+    Route::get('/directory/public', [DirectoryController::class, 'index_public'])->name('directory.index_public');
 });
 
 Route::middleware(['auth:sanctum', 'admin:sanctum'])->group(function () {
@@ -64,4 +66,7 @@ Route::middleware(['auth:sanctum', 'admin:sanctum'])->group(function () {
     Route::put('/restrictions/admin/{id}', [RestrictionController::class, 'update'])->name('restrictions.update');
 
     Route::post('/directory', [DirectoryController::class, 'store'])->name('directory.store');
+    Route::get('/directory', [DirectoryController::class, 'index'])->name('directory.index');
+    Route::put('/directory/{id}', [DirectoryController::class, 'update'])->name('directory.update');
+    Route::delete('/directory/{id}', [DirectoryController::class, 'destroy'])->name('directory.destroy');
 });

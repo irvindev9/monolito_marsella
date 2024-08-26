@@ -14,7 +14,39 @@ class DirectoryController extends Controller
      */
     public function index()
     {
-        //
+        $directories = Directory::orderBy('order')->get();
+
+        foreach ($directories as $directory) {
+            $directory->photo = $directory->photoUrl();
+        }
+
+        return response()->json($directories);
+    }
+
+    public function index_public(Request $request)
+    {
+        $user = $request->user();
+
+        $message = null;
+
+        if ($user->house_id) {
+            $directories = Directory::orderBy('order')->get();
+
+            foreach ($directories as $directory) {
+                $directory->photo = $directory->photoUrl();
+            }
+
+            if (count($directories) == 0) {
+                $message = 'De momento no hay ningún directorio disponible.';
+            }
+        } else {
+            $directories = [];
+            $message = 'No tienes permisos para ver el directorio, necesitas tener un domicilio asignado.';
+        }
+
+        
+
+        return response()->json(['directories' => $directories, 'message' => $message]);
     }
 
     /**
@@ -33,9 +65,7 @@ class DirectoryController extends Controller
         $request->validate([
             'name' => 'required',
             'position' => 'required',
-            'phone' => 'required:numeric',
-            'description' => 'required',
-            'file' => 'required:file',
+            'phone' => 'numeric',
         ]);
 
         $directory = new Directory();
@@ -43,8 +73,9 @@ class DirectoryController extends Controller
             $directory->position = $request->position;
             $directory->phone = $request->phone ?? null;
             $directory->description = $request->description ?? null;
+            $directory->order = Directory::max('order') ? Directory::max('order') + 1 : 0;
 
-            if (isset($request->file)) {
+            if (isset($request->file) && $request->file != null && $request->file != '' && $request->file != 'null') {
                 $fileName = time().'.'.$request->file->getClientOriginalExtension();
                 ini_set('max_execution_time', 300);
 
@@ -87,7 +118,22 @@ class DirectoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'position' => 'required',
+            'phone' => 'numeric',
+            'order' => 'required|numeric',
+        ]);
+
+        $directory = Directory::find($id);
+            $directory->name = $request->name;
+            $directory->position = $request->position;
+            $directory->phone = $request->phone ?? null;
+            $directory->description = $request->description ?? null;
+            $directory->order = $request->order;
+        $directory->save();
+              
+        return response()->json(['message' => 'El directorio se ha actualizado correctamente']);
     }
 
     /**
@@ -95,6 +141,9 @@ class DirectoryController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $directory = Directory::find($id);
+        $directory->delete();
+
+        return response()->json(['message' => 'El directorio se ha eliminado correctamente']);
     }
 }

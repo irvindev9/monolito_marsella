@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { toast } from 'vue3-toastify';
+import { useAdminStore } from '@/Stores/adminStore';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const position = ref(null);
@@ -8,6 +9,10 @@ const name = ref(null);
 const phone = ref(null);
 const description = ref(null);
 const file = ref(null);
+
+const store = useAdminStore();
+
+const emit = defineEmits(['returnScreen']);
 
 const validations = ref({
     position: false,
@@ -36,6 +41,8 @@ function saveData() {
     formData.append('description', description.value);
     formData.append('file', file.value);
 
+    store.setIsLoading(true);
+
     axios.post('/api/directory', formData, {
         headers: {
             'Content-Type': 'multipart/form-data'
@@ -44,9 +51,12 @@ function saveData() {
         console.log(response);
         cleanForm();
         toast.success('Registro guardado');
+        emit('returnScreen');
     }).catch(error => {
         console.error(error);
         toast.error('Error al guardar el registro');
+    }).finally(() => {
+        store.setIsLoading(false);
     });
 }
 
