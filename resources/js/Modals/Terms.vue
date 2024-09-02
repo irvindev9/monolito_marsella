@@ -76,7 +76,7 @@ const selectedDay = computed(() => selectedDate.value.getDate());
             directo de la terraza, así como también para cubrir gastos de servicios, tales como agua y luz. <br>
             TERCERA.- INMUEBLE. se recibe en perfecto estado, así como el inventario y se cumplirán con las normas
             establecidas de uso, en cuanto a comportamiento, aforo, estacionamiento y ruido. Este último deberá darse
-            termino a las 0:00 horas como tolerancia, y <b>de no respetarse se sancionará con 1 año si poder reservar el
+            termino a las 0:00 horas como tolerancia, y <b>de no respetarse se sancionará con 1 año sin poder reservar el
                 inmueble</b>, tal como se establece en el reglamento. <br>
             CUARTA.- LIMPIEZA. ’’EL RESIDENTE’’ se compromete con la limpieza del inmueble, enviando la evidencia de esta
             labor a un miembro del comité (preferentemente presidente/secretario) Así como llevarse a su domicilio los
@@ -85,7 +85,7 @@ const selectedDay = computed(() => selectedDate.value.getDate());
             contrario, al incumplir esta cláusula y/o no dejar en perfecto estado el inmueble, el residente se hará acreedor
             a una
             <b>sanción de $500 pesos (M/N)</b>, dicho cargo se verá reflejado en la aplicación de recaudación de cuota de
-            mantenimiento. Además de <b>1 año si poder reservar el inmueble</b>, tal como se establece en el reglamento.
+            mantenimiento. Además de <b>1 año sin poder reservar el inmueble</b>, tal como se establece en el reglamento.
             <br>
             QUINTA.- REGLAMENTO. ‘’EL RESIDENTE’’ Acepta acatar cada una de las disposiciones contenidas en el
             “REGLAMENTO DE USO Y DISFRUTE DE INSTALACIONES DE LA TERRAZA GRILL DEL FRACCIONAMIENTO PRIVADA

@@ -53,7 +53,11 @@ onMounted(async () => {
                 <p>
                     <small>
                         <i v-if="!reservation.is_signed" class="bi bi-exclamation-circle"></i>
-                        {{ reservation.is_signed ? 'Contrato entregado' : 'Pendiente de entregar ' }}
+                        {{
+                            (reservation.is_signed == 1) ? 'Contrato entregado' :
+                            (reservation.is_signed == 2) ? 'Contrato firmado digitalmente' :
+                                'Pendiente de entregar '
+                        }}
                         <a v-if="!reservation.is_signed" href="/documents/Contrato.pdf"
                             class="text-blue-500 hover:text-blue-700">
                             contrato

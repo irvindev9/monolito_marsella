@@ -24,7 +24,7 @@ async function reserveDate() {
     try {
         const { data } = await axios.post('/api/reservations', {
             reservation_date: pickDate.value.toDateString(),
-            acceptTerms: 1,
+            acceptTerms: 2,
         })
         toast.success(`${data.message} - Fecha reservada: ${data.reservation_date}`);
         await getReservations();
