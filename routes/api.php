@@ -8,6 +8,7 @@ use App\Http\Controllers\HouseController;
 use App\Http\Controllers\ConfigController;
 use App\Http\Controllers\RestrictionController;
 use App\Http\Controllers\DirectoryController;
+use App\Http\Controllers\PasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,6 +34,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/house', [HouseController::class, 'getHouse'])->name('house.getHouse');
 
     Route::get('/directory/public', [DirectoryController::class, 'index_public'])->name('directory.index_public');
+
+    Route::get('/passwords/public/{reservationId}', [PasswordController::class, 'indexPublic'])->name('passwords.indexPublic');
 });
 
 Route::middleware(['auth:sanctum', 'admin:sanctum'])->group(function () {
@@ -69,4 +72,9 @@ Route::middleware(['auth:sanctum', 'admin:sanctum'])->group(function () {
     Route::get('/directory', [DirectoryController::class, 'index'])->name('directory.index');
     Route::put('/directory/{id}', [DirectoryController::class, 'update'])->name('directory.update');
     Route::delete('/directory/{id}', [DirectoryController::class, 'destroy'])->name('directory.destroy');
+
+    Route::get('/passwords', [PasswordController::class, 'index'])->name('passwords.index');
+    Route::post('/passwords', [PasswordController::class, 'store'])->name('passwords.store');
+    Route::put('/passwords/{id}', [PasswordController::class, 'update'])->name('passwords.update');
+    Route::delete('/passwords/{id}', [PasswordController::class, 'destroy'])->name('passwords.destroy');
 });

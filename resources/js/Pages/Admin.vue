@@ -10,6 +10,7 @@ import Requests from '@/Admin/Requests.vue';
 import Restrictions from '@/Admin/Restrictions.vue';
 import RestrictionList from '@/Admin/RestrictionList.vue';
 import Directory from '@/Admin/Directory.vue';
+import Access from '@/Admin/Access.vue';
 import { Head } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import { useAdminStore } from '@/Stores/adminStore';
@@ -50,6 +51,8 @@ const activeTab = computed(() => store.activeTab);
                 <RestrictionList v-if="activeTab === 'restrictionsList'" />
 
                 <Directory v-if="activeTab === 'directory'" />
+
+                <Access v-if="activeTab === 'access'" />
             </div>
         </div>
         <LoadingScreen :show="isLoading" />

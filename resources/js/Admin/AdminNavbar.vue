@@ -68,6 +68,11 @@ onMounted(async () => {
                     <i class="bi bi-journal-medical"></i> Directorio
                 </a>
             </li>
+            <li class="list-item" @click="store.setActiveTab('access')">
+                <a href="#">
+                    <i class="bi bi-lock"></i> Accesos
+                </a>
+            </li>
         </ul>
     </div>
 </template>

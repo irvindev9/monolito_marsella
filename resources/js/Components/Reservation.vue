@@ -1,5 +1,6 @@
 <script setup>
 import DangerButton from '@/Components/DangerButton.vue';
+import Access from '@/Components/Access.vue';
 import { ref, onMounted, defineEmits } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 import { format } from 'date-fns';
@@ -26,59 +27,73 @@ onMounted(async () => {
     await getReservations();
 });
 
+function validateAccess(reservationDate) {
+    // Show only for actual or future, remove time
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const reservationDateFormatted = new Date(reservationDate);
+    reservationDateFormatted.setHours(0, 0, 0, 0);
+    return reservationDateFormatted >= today;
+}
+
 </script>
 
 <template>
-    <div class="sm:flex sm:items-center sm:justify-between sm:space-x-5 rounded-lg px-1 my-3 border border-slate-200"
+    <div class="sm:space-x-5 rounded-lg px-1 my-3 border border-slate-200"
         :class="{ 'bg-gray-100': reservation.is_approved === 0, 'bg-green-100': reservation.is_approved === 1, 'bg-red-100': reservation.is_approved === 2 }"
         v-for="reservation in myReservations" :key="reservation.id">
-        <div class="flex items-center flex-1 min-w-0">
-            <i class="bi bi-calendar4-week flex-shrink-0 object-cover rounded-full m-3"></i>
-            <div class="mt-0 mr-0 mb-0 ml-4 flex-1 min-w-0">
-                <p class="text-lg truncate">
-                    {{ reservation.user ? reservation.user.name : 'Registrado por comité' }} - {{
-                        `${reservation.house.street.name} ${reservation.house.house_number}` }}
-                </p>
-                <p class="text-md">Fecha reserva: <span class="font-bold">{{ format(new Date(reservation.reservation_date),
-                    'MM/dd/yyyy') }}</span></p>
-                <p class="text-sm">
-                    <small>
-                        Solicitud hecha el <span class="font-bold">{{ format(new Date(reservation.created_at),
-                            'MM/dd/yyyy') }}</span>
-                    </small>
-                </p>
-                <small class="text-sm font-bold">{{ reservation.is_approved === 0 ? 'En espera de aprobación' :
-                    reservation.is_approved === 1 ? 'Aprobado' : 'Rechazado' }}</small> <br>
-                <small class="text-sm" v-if="reservation.notes">Mensaje: {{ reservation.notes }}</small>
-                <p>
-                    <small>
-                        <i v-if="!reservation.is_signed" class="bi bi-exclamation-circle"></i>
-                        {{
-                            (reservation.is_signed == 1) ? 'Contrato entregado' :
-                            (reservation.is_signed == 2) ? 'Contrato firmado digitalmente' :
-                                'Pendiente de entregar '
-                        }}
-                        <a v-if="!reservation.is_signed" href="/documents/Contrato.pdf"
-                            class="text-blue-500 hover:text-blue-700">
-                            contrato
-                        </a></small>
-                    <br>
-                    <small>
-                        <i v-if="!reservation.is_paid" class="bi bi-exclamation-circle"></i>
-                        {{ reservation.is_paid ? 'Pago realizado' : 'Pago pendiente' }}
-                    </small>
-                </p>
+        <div class="sm:flex sm:items-center sm:justify-between ">
+            <div class="flex items-center flex-1 min-w-0">
+                <i class="bi bi-calendar4-week flex-shrink-0 object-cover rounded-full m-3"></i>
+                <div class="mt-0 mr-0 mb-0 ml-4 flex-1 min-w-0">
+                    <p class="text-lg truncate">
+                        {{ reservation.user ? reservation.user.name : 'Registrado por comité' }} - {{
+                            `${reservation.house.street.name} ${reservation.house.house_number}` }}
+                    </p>
+                    <p class="text-md">Fecha reserva: <span class="font-bold">{{ format(new Date(reservation.reservation_date),
+                        'MM/dd/yyyy') }}</span></p>
+                    <p class="text-sm">
+                        <small>
+                            Solicitud hecha el <span class="font-bold">{{ format(new Date(reservation.created_at),
+                                'MM/dd/yyyy') }}</span>
+                        </small>
+                    </p>
+                    <small class="text-sm font-bold">{{ reservation.is_approved === 0 ? 'En espera de aprobación' :
+                        reservation.is_approved === 1 ? 'Aprobado' : 'Rechazado' }}</small> <br>
+                    <small class="text-sm" v-if="reservation.notes">Mensaje: {{ reservation.notes }}</small>
+                    <p>
+                        <small>
+                            <i v-if="!reservation.is_signed" class="bi bi-exclamation-circle"></i>
+                            {{
+                                (reservation.is_signed == 1) ? 'Contrato entregado' :
+                                (reservation.is_signed == 2) ? 'Contrato firmado digitalmente' :
+                                    'Pendiente de entregar '
+                            }}
+                            <a v-if="!reservation.is_signed" href="/documents/Contrato.pdf"
+                                class="text-blue-500 hover:text-blue-700">
+                                contrato
+                            </a></small>
+                        <br>
+                        <small>
+                            <i v-if="!reservation.is_paid" class="bi bi-exclamation-circle"></i>
+                            {{ reservation.is_paid ? 'Pago realizado' : 'Pago pendiente' }}
+                        </small>
+                    </p>
+                </div>
             </div>
+            <DangerButton class="m-1" @click="deleteReservation(reservation.id)">
+                <div v-if="reservation.is_approved != 0">
+                    <i class="bi bi-archive"></i>
+                    Archivar
+                </div>
+                <div v-else>
+                    <i class="bi bi-trash"></i>
+                    Eliminar/Cancelar
+                </div>
+            </DangerButton>
         </div>
-        <DangerButton class="m-1" @click="deleteReservation(reservation.id)">
-            <div v-if="reservation.is_approved != 0">
-                <i class="bi bi-archive"></i>
-                Archivar
-            </div>
-            <div v-else>
-                <i class="bi bi-trash"></i>
-                Eliminar/Cancelar
-            </div>
-        </DangerButton>
+        <div v-if="validateAccess(reservation.reservation_date)">
+            <Access :passwords="passwords" title="Accesos" :reservation-id="reservation.id" :reservation-date="reservation.reservation_date" />
+        </div>
     </div>
 </template>
