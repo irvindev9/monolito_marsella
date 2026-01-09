@@ -11,6 +11,7 @@ import Restrictions from '@/Admin/Restrictions.vue';
 import RestrictionList from '@/Admin/RestrictionList.vue';
 import Directory from '@/Admin/Directory.vue';
 import Access from '@/Admin/Access.vue';
+import EventSizes from '@/Admin/EventSizes.vue';
 import { Head } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import { useAdminStore } from '@/Stores/adminStore';
@@ -53,6 +54,8 @@ const activeTab = computed(() => store.activeTab);
                 <Directory v-if="activeTab === 'directory'" />
 
                 <Access v-if="activeTab === 'access'" />
+
+                <EventSizes v-if="activeTab === 'eventSizes'" />
             </div>
         </div>
         <LoadingScreen :show="isLoading" />

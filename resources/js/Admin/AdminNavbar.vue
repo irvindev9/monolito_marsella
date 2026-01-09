@@ -73,6 +73,11 @@ onMounted(async () => {
                     <i class="bi bi-lock"></i> Accesos
                 </a>
             </li>
+            <li class="list-item" @click="store.setActiveTab('eventSizes')">
+                <a href="#">
+                    <i class="bi bi-people"></i> Aforo de los eventos
+                </a>
+            </li>
         </ul>
     </div>
 </template>

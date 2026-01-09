@@ -9,6 +9,7 @@ use App\Http\Controllers\ConfigController;
 use App\Http\Controllers\RestrictionController;
 use App\Http\Controllers\DirectoryController;
 use App\Http\Controllers\PasswordController;
+use App\Http\Controllers\ReservationEventSizeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +37,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/directory/public', [DirectoryController::class, 'index_public'])->name('directory.index_public');
 
     Route::get('/passwords/public/{reservationId}', [PasswordController::class, 'indexPublic'])->name('passwords.indexPublic');
+
+    Route::get('/event-sizes', [ReservationEventSizeController::class, 'index'])->name('event-sizes.index');
+
 });
 
 Route::middleware(['auth:sanctum', 'admin:sanctum'])->group(function () {
@@ -77,4 +81,8 @@ Route::middleware(['auth:sanctum', 'admin:sanctum'])->group(function () {
     Route::post('/passwords', [PasswordController::class, 'store'])->name('passwords.store');
     Route::put('/passwords/{id}', [PasswordController::class, 'update'])->name('passwords.update');
     Route::delete('/passwords/{id}', [PasswordController::class, 'destroy'])->name('passwords.destroy');
+
+    Route::post('/event-sizes', [ReservationEventSizeController::class, 'store'])->name('event-sizes.store');
+    Route::put('/event-sizes/{id}', [ReservationEventSizeController::class, 'update'])->name('event-sizes.update');
+    Route::delete('/event-sizes/{id}', [ReservationEventSizeController::class, 'destroy'])->name('event-sizes.destroy');
 });

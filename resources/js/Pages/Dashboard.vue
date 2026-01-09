@@ -18,6 +18,7 @@ const reservations = ref([]);
 
 const attrs = ref([]);
 const pickDate = ref(new Date());
+const eventSizes = ref([]);
 
 async function reserveDate() {
     isLoading.value = true;
@@ -47,6 +48,7 @@ const { open, close } = useModal({
             close()
         },
         selectedDate: pickDate,
+        eventSizes: eventSizes.value,
     },
 })
 
@@ -98,6 +100,16 @@ function updateCalendarAttrs() {
     });
     attrs.value = newAttrs;
 }
+
+onMounted(async () => {
+    await axios.get('/api/event-sizes')
+        .then(response => {
+            eventSizes.value = response.data;
+        })
+        .catch(error => {
+            console.log(error);
+        });
+});
 
 </script>
 

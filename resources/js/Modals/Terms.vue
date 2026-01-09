@@ -14,6 +14,18 @@ onMounted(async () => {
     house.value = data;
 });
 
+
+function validateValues() {
+    if (!accept.value) {
+        return false;
+    }
+    if (!selectedEventSize.value && eventSizes.value.length > 0) {
+        toast.error('Debes seleccionar un tamaño de aforo para continuar');
+        return false;
+    }
+    return true;
+}
+
 const year = new Date().getFullYear();
 const month = new Date().getMonth() + 1;
 const day = new Date().getDate();
@@ -28,12 +40,13 @@ const selectedYear = computed(() => selectedDate.value.getFullYear());
 const selectedMonth = computed(() => selectedDate.value.getMonth() + 1);
 const selectedDay = computed(() => selectedDate.value.getDate());
 
+const selectedEventSize = ref(null);
 </script>
 
 
 <template>
     <VueFinalModal class="flex justify-center items-center"
-        content-class="flex flex-col max-w-xl mx-4 p-4 bg-white dark:bg-gray-900 border dark:border-gray-700 rounded-lg space-y-2">
+        content-class="flex flex-col max-w-xl mx-4 p-4 bg-white border rounded-lg space-y-2">
         <h1 class="text-xl">
             Terminos y condiciones
         </h1>
@@ -115,6 +128,14 @@ const selectedDay = computed(() => selectedDate.value.getDate());
             <label for="accept">&nbsp; Acepto los términos y condiciones</label>
 
         </div>
+        <div class="flex justify-end" v-if="eventSizes.length > 0">
+            <select name="event-size" id="event-size" required v-model="selectedEventSize">
+                <option value="">Selecciona un tamaño de aforo</option>
+                <option v-for="eventSize in eventSizes" :key="eventSize.id" :value="eventSize.id">
+                    {{ eventSize.size }}
+                </option>
+            </select>
+        </div>
         <button class="mt-1 ml-auto px-2 border rounded-md" @click="emit('confirm')" :disabled="!accept"
             :class="{ 'bg-slate-50': !accept, 'text-white': !accept }">
             Confirmar
@@ -129,5 +150,15 @@ const selectedDay = computed(() => selectedDate.value.getDate());
 .content {
     overflow-y: auto;
     max-height: 70vh;
+}
+
+#event-size {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin: 10px 0;
+    background-color: gray;
+    color: #fff;
 }
 </style>
