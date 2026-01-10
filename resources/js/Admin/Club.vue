@@ -64,6 +64,19 @@ async function saveConfig() {
                     v-model="configs.find(config => config.slug === 'ttps').setting">
             </div>
         </div>
+        
+    </div>
+    <div class="flex">
+        <div class="w-1/3 px-3">
+            <div class="flex flex-col" v-if="configs && configs.find(config => config.slug === 'mdtpr')">
+                <label class="font-bold my-3">
+                    {{ configs.find(config => config.slug === 'mdtpr').description }}
+                </label>
+                <input type="text"
+                    class="border border-gray-300 rounded-md px-3 py-2 outline-none focus:ring-1 focus:ring-blue-600"
+                    v-model="configs.find(config => config.slug === 'mdtpr').setting">
+            </div>
+        </div>
     </div>
     <div class="flex">
         <div class="w-full px-3">

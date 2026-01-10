@@ -1,7 +1,6 @@
 <script setup>
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { ref, onMounted } from 'vue';
-import { defineProps, defineEmits } from 'vue';
 import { toast } from 'vue3-toastify';
 
 const emit = defineEmits(['close']);

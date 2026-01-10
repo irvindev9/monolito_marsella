@@ -1,6 +1,6 @@
 <script setup>
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { defineEmits, ref, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 
 const emit = defineEmits(['close']);
 

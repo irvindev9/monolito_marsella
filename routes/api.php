@@ -59,6 +59,7 @@ Route::middleware(['auth:sanctum', 'admin:sanctum'])->group(function () {
     Route::get('/reservations/approval-requests/count', [ReservationController::class, 'approvalRequestsCount'])->name('reservations.approvalRequestsCount');
     Route::post('/reservations/admin', [ReservationController::class, 'storeAdmin'])->name('reservations.storeAdmin');
     Route::delete('/reservations/admin/{id}', [ReservationController::class, 'remove'])->name('reservations.removeAdmin');
+    Route::post('/reservations/cancel-expired', [ReservationController::class, 'cancelExpiredReservations'])->name('reservations.cancelExpiredReservations');
 
 
     Route::get('/events', [ReservationController::class, 'events'])->name('reservations.events');

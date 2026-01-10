@@ -34,11 +34,26 @@ async function updateReservation(reservationId, status) {
         console.log(error);
     }
 }
+
+async function cancelExpiredReservations() {
+    try {
+        const { data } = await axios.post('/api/reservations/cancel-expired');
+        await getReservationRequests();
+        toast.success(data.message);
+    } catch (error) {
+        console.log(error);
+    }
+}
 </script>
 
 <template>
     <Head title="Solicitudes" />
-    <h3 class="font-bold py-3">Solicitudes</h3>
+    <div class="header-titles flex justify-between items-center mb-4">
+        <h3 class="font-bold py-1">Solicitudes</h3>
+        <DangerButton class="expired-btn mt-1" @click="cancelExpiredReservations">
+            <i class="bi bi-x-circle"></i> Cancelar reservas expiradas
+        </DangerButton>
+    </div>
 
     <div v-if="reservationRequests.length > 0">
         <ul>

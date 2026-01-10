@@ -1,6 +1,5 @@
 <script setup>
 import { FingerprintSpinner } from 'epic-spinners'
-import { defineProps } from 'vue'
 
 const props = defineProps({
     show: {

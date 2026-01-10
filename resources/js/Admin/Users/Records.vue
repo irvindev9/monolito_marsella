@@ -1,7 +1,6 @@
 <script setup>
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
-import { defineProps, defineEmits } from 'vue';
 import { toast } from 'vue3-toastify';
 
 const props = defineProps({

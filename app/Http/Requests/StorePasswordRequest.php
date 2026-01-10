@@ -22,7 +22,6 @@ class StorePasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => 'required|exists:passwords,id',
             'title' => 'required|string|max:255',
             'password' => 'required|string|max:255',
             'is_active' => 'required|boolean',

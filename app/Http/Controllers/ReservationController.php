@@ -7,6 +7,7 @@ use App\Models\House;
 use App\Validations\ReservationsValidator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use App\Models\Config;
 
 class ReservationController extends Controller
 {
@@ -235,5 +236,35 @@ class ReservationController extends Controller
         return response()->json([
             'message' => 'Reservación no encontrada',
         ], 404);
+    }
+
+    /**
+     * Cancel reservations expired payment time
+     */
+
+    public function cancelExpiredReservations()
+    {
+        $config = Config::where('slug', 'mdtpr')->first();
+        try {
+            $daysToPay = $config ? (int)$config->setting : 7;
+            $validatedDaysToPay = $daysToPay > 0 ? $daysToPay : 7;
+        } catch (\Exception $e) {
+            $validatedDaysToPay = 7;
+        }
+
+        $expiredReservations = Reservation::where('is_approved', 0)
+            ->where('is_paid', 0)
+            ->where('created_at', '<', date('Y-m-d H:i:s', strtotime("-$validatedDaysToPay days")))
+            ->get();   
+            
+        
+        foreach ($expiredReservations as $reservation) {
+            $reservation->is_approved = 3; // cancelled for expired payment time
+            $reservation->save();
+        }
+
+        return response()->json([
+            'message' => 'Expired reservations cancelled successfully',
+        ]);
     }
 }

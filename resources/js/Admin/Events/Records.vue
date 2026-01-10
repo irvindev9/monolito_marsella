@@ -1,6 +1,6 @@
 <script setup>
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { defineProps, onMounted, defineEmits, ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { format } from 'date-fns';
 
 const events = ref([]);

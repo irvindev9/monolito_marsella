@@ -1,14 +1,16 @@
 <script setup>
 import DangerButton from '@/Components/DangerButton.vue';
 import Access from '@/Components/Access.vue';
-import { ref, onMounted, defineEmits } from 'vue';
+import { ref, onMounted } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 import { format } from 'date-fns';
 import { toast } from 'vue3-toastify';
+import CountDown from './CountDown.vue';
 
 const emit = defineEmits(['refresh']);
 const myReservations = ref([]);
 const user = usePage().props.auth.user;
+const configs = ref([]);
 
 async function getReservations() {
     const { data } = await axios.get(`/api/reservations/${user.house_id}`);
@@ -23,8 +25,18 @@ async function deleteReservation(id) {
     toast.success(data.message);
 }
 
+async function getConfig() {
+    try {
+        const { data } = await axios.get('/api/configs');
+        configs.value = data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 onMounted(async () => {
     await getReservations();
+    await getConfig();
 });
 
 function validateAccess(reservationDate) {
@@ -39,8 +51,8 @@ function validateAccess(reservationDate) {
 </script>
 
 <template>
-    <div class="sm:space-x-5 rounded-lg px-1 my-3 border border-slate-200"
-        :class="{ 'bg-gray-100': reservation.is_approved === 0, 'bg-green-100': reservation.is_approved === 1, 'bg-red-100': reservation.is_approved === 2 }"
+    <div class="sm:space-x-5 rounded-lg px-1 my-3 border border-slate-200 reservation-box"
+        :class="{ 'bg-gray-100': reservation.is_approved === 0, 'bg-green-100': reservation.is_approved === 1, 'bg-red-100': reservation.is_approved === 2 || reservation.is_approved === 3 }"
         v-for="reservation in myReservations" :key="reservation.id">
         <div class="sm:flex sm:items-center sm:justify-between ">
             <div class="flex items-center flex-1 min-w-0">
@@ -59,7 +71,7 @@ function validateAccess(reservationDate) {
                         </small>
                     </p>
                     <small class="text-sm font-bold">{{ reservation.is_approved === 0 ? 'En espera de aprobación' :
-                        reservation.is_approved === 1 ? 'Aprobado' : 'Rechazado' }}</small> <br>
+                        reservation.is_approved === 1 ? 'Aprobado' : reservation.is_approved === 2 ? 'Rechazado' : 'Cancelado por tiempo de pago expirado' }}</small> <br>
                     <small class="text-sm" v-if="reservation.notes">Mensaje: {{ reservation.notes }}</small>
                     <p>
                         <small>
@@ -81,19 +93,36 @@ function validateAccess(reservationDate) {
                     </p>
                 </div>
             </div>
-            <DangerButton class="m-1" @click="deleteReservation(reservation.id)">
-                <div v-if="reservation.is_approved != 0">
-                    <i class="bi bi-archive"></i>
-                    Archivar
-                </div>
-                <div v-else>
-                    <i class="bi bi-trash"></i>
-                    Eliminar/Cancelar
-                </div>
-            </DangerButton>
+            <div>
+                <DangerButton class="m-1 reservation-btn-archive" @click="deleteReservation(reservation.id)">
+                    <div v-if="reservation.is_approved != 0">
+                        <i class="bi bi-archive"></i>
+                        Archivar
+                    </div>
+                    <div v-else>
+                        <i class="bi bi-trash"></i>
+                        Eliminar/Cancelar
+                    </div>
+                </DangerButton>
+                <!-- countdown timer -->
+                <CountDown :configs="configs" :reservation="reservation" v-if="reservation.is_approved === 0 && reservation.is_paid === 0" />
+            </div>
         </div>
         <div v-if="validateAccess(reservation.reservation_date)">
             <Access :passwords="passwords" title="Accesos" :reservation-id="reservation.id" :reservation-date="reservation.reservation_date" />
         </div>
     </div>
 </template>
+
+<style scoped>
+    .reservation-box {
+        position: relative;
+    }
+
+    @media screen and (max-width: 576px) {
+        
+    }
+    .reservation-btn-archive {
+        margin-bottom: 35px;
+    }
+</style>

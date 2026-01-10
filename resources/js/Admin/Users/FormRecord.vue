@@ -1,7 +1,7 @@
 <script setup>
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
-import { ref, onMounted, defineEmits, computed, reactive, defineProps } from 'vue';
+import { ref, onMounted, computed, reactive } from 'vue';
 import { useAdminStore } from '@/Stores/adminStore';
 import { toast } from 'vue3-toastify';
 

@@ -30,6 +30,12 @@ class ConfigSeeder extends Seeder
                 'slug'=> 'iro',
                 'description'=> 'Indica si el registro de la terraza está abierto',
                 'setting'=> '1',
+            ],
+            [
+                'name'=> 'max_days_to_pay_reservation',
+                'slug'=> 'mdtpr',
+                'description'=> 'Número máximo de días para pagar una reserva',
+                'setting'=> '7',
             ]
         ];
 

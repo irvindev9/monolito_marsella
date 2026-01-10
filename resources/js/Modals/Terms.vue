@@ -1,5 +1,5 @@
 <script setup>
-import { defineEmits, onMounted, ref, computed, defineProps, toRefs } from 'vue';
+import { onMounted, ref, computed, toRefs } from 'vue';
 import { VueFinalModal } from 'vue-final-modal';
 import { usePage } from '@inertiajs/vue3';
 
