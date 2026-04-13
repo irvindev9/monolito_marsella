@@ -86,10 +86,6 @@ function validateAccess(reservationDate) {
                                 contrato
                             </a></small>
                         <br>
-                        <small>
-                            <i v-if="!reservation.is_paid" class="bi bi-exclamation-circle"></i>
-                            {{ reservation.is_paid ? 'Pago realizado' : 'Pago pendiente' }}
-                        </small>
                     </p>
                 </div>
             </div>
