@@ -42,7 +42,7 @@ async function getRestrictions() {
     <div class="block">
         <label>Restricciones</label>
     </div>
-    <table class="table-fixed border table-records">
+    <table class="table-fixed border table-records table-responsive-cards">
         <thead>
             <tr>
                 <th>Domicilio</th>
@@ -55,22 +55,22 @@ async function getRestrictions() {
         </thead>
         <tbody>
             <tr v-for="restriction in restrictions" :key="restriction.id">
-                <td class="border p-1">
+                <td class="border p-1" data-label="Domicilio">
                     <div v-if="restriction.house">{{ restriction.house.street.name ?? '' }} {{
                         restriction.house.house_number ?? '' }}</div>
                 </td>
-                <td class="border p-1">{{ format(new Date(restriction.block_date_end), "dd/MM/yyyy") }}</td>
-                <td class="border p-1">
+                <td class="border p-1" data-label="Bloqueo hasta">{{ format(new Date(restriction.block_date_end), "dd/MM/yyyy") }}</td>
+                <td class="border p-1" data-label="Bloqueado por">
                     {{ restriction.block_by.name }}
                 </td>
-                <td class="border p-1">
+                <td class="border p-1" data-label="Razón">
                     {{ restriction.reason }}
                 </td>
-                <td class="border p-1">
+                <td class="border p-1" data-label="Activo">
                     <input type="checkbox" disabled class="appearance-none checked:bg-blue-500 m-auto block"
                         :checked="restriction.is_active" />
                 </td>
-                <td class="border p-1 text-center">
+                <td class="border p-1 text-center" data-label="Acciones">
                     <PrimaryButton @click="removeRestriction(restriction.id, !restriction.is_active)">
                         {{ restriction.is_active ? 'Desactivar' : 'Activar' }}
                     </PrimaryButton>

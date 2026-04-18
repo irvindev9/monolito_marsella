@@ -59,8 +59,8 @@ async function cancelExpiredReservations() {
         <ul>
             <li class="shadow-sm shadow-slate-200 border rounded px-3 mb-2" v-for="reservation in reservationRequests"
                 :key="reservation.id">
-                <div class="flex">
-                    <div class="w-1/2">
+                <div class="flex flex-col md:flex-row gap-2 py-2">
+                    <div class="w-full md:w-1/2">
                         <label class="font-bold" for="title">{{ reservation.user ? reservation.user.name : 'Sin usuario' }}
                             -
                             {{ reservation.house.street.name
@@ -70,12 +70,12 @@ async function cancelExpiredReservations() {
                             Fecha de solicitud: {{ format(new Date(reservation.created_at), "dd/MM/yyyy HH:mm:ss") }} <br>
                         </p>
                     </div>
-                    <div class="w-1/2">
-                        <div class="flex flex-row-reverse py-3">
-                            <PrimaryButton @click="updateReservation(reservation.id, 1)">
+                    <div class="w-full md:w-1/2">
+                        <div class="flex flex-col sm:flex-row md:flex-row-reverse gap-2 md:py-3">
+                            <PrimaryButton class="w-full sm:w-auto justify-center" @click="updateReservation(reservation.id, 1)">
                                 <i class="bi bi-hand-thumbs-up"></i> Aprobar
                             </PrimaryButton>
-                            <DangerButton class="mx-1" @click="updateReservation(reservation.id, 2)">
+                            <DangerButton class="w-full sm:w-auto justify-center md:mx-1" @click="updateReservation(reservation.id, 2)">
                                 <i class="bi bi-hand-thumbs-down"></i> Rechazar
                             </DangerButton>
                         </div>
