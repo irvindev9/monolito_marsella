@@ -37,8 +37,8 @@ async function saveConfig() {
     <Head title="Terraza" />
     <h3 for="title" class="my-3 font-bold">Terraza</h3>
 
-    <div class="flex">
-        <div class="w-1/3 px-3">
+    <div class="flex flex-col sm:flex-row">
+        <div class="w-full sm:w-1/3 px-3">
             <div class="flex flex-col" v-if="configs">
                 <label class="font-bold my-3">
                     {{ configs.find(config => config.slug === 'sd').description }}
@@ -54,7 +54,7 @@ async function saveConfig() {
                 </select>
             </div>
         </div>
-        <div class="w-2/3 px-3">
+        <div class="w-full sm:w-2/3 px-3">
             <div class="flex flex-col" v-if="configs">
                 <label class="font-bold my-3">
                     {{ configs.find(config => config.slug === 'ttps').description }}
@@ -64,10 +64,10 @@ async function saveConfig() {
                     v-model="configs.find(config => config.slug === 'ttps').setting">
             </div>
         </div>
-        
+
     </div>
-    <div class="flex">
-        <div class="w-1/3 px-3">
+    <div class="flex flex-col sm:flex-row">
+        <div class="w-full sm:w-1/3 px-3">
             <div class="flex flex-col" v-if="configs && configs.find(config => config.slug === 'mdtpr')">
                 <label class="font-bold my-3">
                     {{ configs.find(config => config.slug === 'mdtpr').description }}
