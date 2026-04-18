@@ -33,7 +33,7 @@ const selectedDay = computed(() => selectedDate.value.getDate());
 
 <template>
     <VueFinalModal class="flex justify-center items-center"
-        content-class="flex flex-col max-w-xl mx-4 p-4 bg-white dark:bg-gray-900 border dark:border-gray-700 rounded-lg space-y-2">
+        content-class="flex flex-col max-w-xl mx-4 p-4 bg-white border rounded-lg space-y-2">
         <h1 class="text-xl">
             Terminos y condiciones
         </h1>

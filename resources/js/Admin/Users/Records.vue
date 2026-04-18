@@ -29,7 +29,7 @@ async function deleteUser(id) {
 </script>
 
 <template>
-    <table class="table-fixed border table-records">
+    <table class="table-fixed border table-records table-responsive-cards">
         <thead>
             <tr>
                 <th class="px-4 py-2">Nombre</th>
@@ -40,11 +40,11 @@ async function deleteUser(id) {
         </thead>
         <tbody>
             <tr v-for="user in users" :key="user.id">
-                <td class="border px-4 py-2">{{ user.name }}</td>
-                <td class="border px-4 py-2">{{ user.email }}</td>
-                <td class="border px-4 py-2">{{ user.house ? `${user.house.street.name} ${user.house.house_number}` : '' }}
+                <td class="border px-4 py-2" data-label="Nombre">{{ user.name }}</td>
+                <td class="border px-4 py-2" data-label="Email">{{ user.email }}</td>
+                <td class="border px-4 py-2" data-label="Domicilio">{{ user.house ? `${user.house.street.name} ${user.house.house_number}` : '' }}
                 </td>
-                <td class="border px-4 py-2 text-center">
+                <td class="border px-4 py-2 text-center" data-label="Acciones">
                     <PrimaryButton class="m-1" @click="editUser(user.id)">
                         <i class="bi bi-pencil"></i>
                         Editar

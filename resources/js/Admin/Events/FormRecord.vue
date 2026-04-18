@@ -13,18 +13,15 @@ const props = defineProps({
     }
 });
 
-const isPaid = ref(null);
 const isSigned = ref(null);
 
 onMounted(() => {
-    isPaid.value = props.event.is_paid == 1;
     isSigned.value = props.event.is_signed == 1;
 });
 
 async function updateEvent() {
     try {
         const { data } = await axios.put('/api/events/' + props.event.id, {
-            is_paid: isPaid.value,
             is_signed: isSigned.value,
             notes: props.event.notes
         })
@@ -120,14 +117,6 @@ async function remove() {
             </div>
         </div>
         <div class="flex">
-            <div class="w-1/3 px-1">
-                <div class="flex flex-col">
-                    <label class="font-bold my-3">
-                        Entregó pago
-                    </label>
-                    <input type="checkbox" class="appearance-none checked:bg-blue-500" v-model="isPaid" />
-                </div>
-            </div>
             <div class="w-1/3 px-1">
                 <div class="flex flex-col">
                     <label class="font-bold my-3">

@@ -184,8 +184,6 @@ class ReservationController extends Controller
 
         $reservation->is_signed = $request->is_signed ? 1 : 0;
 
-        $reservation->is_paid = $request->is_paid ? 1 : 0;
-
         $reservation->notes = $request->notes;
 
         $reservation->save();
@@ -253,7 +251,6 @@ class ReservationController extends Controller
         }
 
         $expiredReservations = Reservation::where('is_approved', 0)
-            ->where('is_paid', 0)
             ->where('created_at', '<', date('Y-m-d H:i:s', strtotime("-$validatedDaysToPay days")))
             ->get();   
             

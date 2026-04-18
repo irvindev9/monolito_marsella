@@ -44,7 +44,7 @@ calculateDeadline();
 </script>
 
 <template>
-    <div class="countdown-timer" v-if="reservation.is_paid == 0 || reservation.is_approved != 1">
+    <div class="countdown-timer" v-if="reservation.is_approved != 1">
         <span>Tiempo restante para hacer el pago:</span>
         <br/>
         <span>{{ createdAt }}</span>

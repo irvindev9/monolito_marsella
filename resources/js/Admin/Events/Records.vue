@@ -59,12 +59,11 @@ function getEvents(value) {
         <button class="btn rounded bg-slate-50 p-1 px-2 hover:bg-slate-100"
             @click="getEvents(!props.showAll)">{{ props.showAll ? 'Ver proximos eventos' : 'Ver todos' }}</button>
     </div>
-    <table class="table-fixed border table-records">
+    <table class="table-fixed border table-records table-responsive-cards">
         <thead>
             <tr>
                 <th>Fecha</th>
                 <th>Domicilio</th>
-                <th>Pago</th>
                 <th>Contrato</th>
                 <th>Aprobado por</th>
                 <th>Acciones</th>
@@ -72,20 +71,16 @@ function getEvents(value) {
         </thead>
         <tbody>
             <tr v-for="event in events" :key="event.id">
-                <td class="border p-1">{{ format(new Date(event.reservation_date), "dd/MM/yyyy") }}</td>
-                <td class="border p-1">
+                <td class="border p-1" data-label="Fecha">{{ format(new Date(event.reservation_date), "dd/MM/yyyy") }}</td>
+                <td class="border p-1" data-label="Domicilio">
                     <div v-if="event.house">{{ event.house.street.name ?? '' }} {{ event.house.house_number ?? '' }}</div>
                 </td>
-                <td class="border p-1">
-                    <input type="checkbox" disabled class="appearance-none checked:bg-blue-500 m-auto block"
-                        :checked="event.is_paid" />
-                </td>
-                <td class="border p-1">
+                <td class="border p-1" data-label="Contrato">
                     <input type="checkbox" disabled class="appearance-none checked:bg-blue-500 m-auto block"
                         :checked="event.is_signed" />
                 </td>
-                <td class="border p-1">{{ event.approved_by ? event.approved_by.name : '' }}</td>
-                <td class="border p-1 text-center">
+                <td class="border p-1" data-label="Aprobado por">{{ event.approved_by ? event.approved_by.name : '' }}</td>
+                <td class="border p-1 text-center" data-label="Acciones">
                     <PrimaryButton @click="editEvent(event.id)">
                         <i class="bi bi-pencil"></i> Editar
                     </PrimaryButton>

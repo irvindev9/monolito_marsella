@@ -26,7 +26,7 @@ const showForm = ref(false);
 <style lang="scss">
 .add_div {
     display: flex;
-    justify-content: end;
+    justify-content: flex-end;
     margin: 10px;
 }
 </style>

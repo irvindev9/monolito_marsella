@@ -101,7 +101,7 @@ function validateAccess(reservationDate) {
                     </div>
                 </DangerButton>
                 <!-- countdown timer -->
-                <CountDown :configs="configs" :reservation="reservation" v-if="reservation.is_approved === 0 && reservation.is_paid === 0" />
+                <CountDown :configs="configs" :reservation="reservation" v-if="reservation.is_approved === 0" />
             </div>
         </div>
         <div v-if="validateAccess(reservation.reservation_date)">
