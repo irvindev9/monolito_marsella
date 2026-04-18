@@ -34,7 +34,7 @@ async function deleteAddress(house_id) {
 }
 </script>
 <template>
-    <table class="table-fixed border table-records">
+    <table class="table-fixed border table-records table-responsive-cards">
         <thead>
             <tr>
                 <th class="px-4 py-2">Calle</th>
@@ -44,9 +44,9 @@ async function deleteAddress(house_id) {
         </thead>
         <tbody>
             <tr v-for="address in addresses" :key="address.id">
-                <td class="border px-4 py-2">{{ address.street.name }}</td>
-                <td class="border px-4 py-2">{{ address.house_number }}</td>
-                <td class="border px-4 py-2 text-center">
+                <td class="border px-4 py-2" data-label="Calle">{{ address.street.name }}</td>
+                <td class="border px-4 py-2" data-label="Número">{{ address.house_number }}</td>
+                <td class="border px-4 py-2 text-center" data-label="Acciones">
                     <DangerButton @click="deleteAddress(address.id)">
                         <i class="bi bi-trash"></i>
                         Borrar

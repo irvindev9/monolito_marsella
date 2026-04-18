@@ -35,7 +35,7 @@ async function getAccesses() {
 </script>
 
 <template>
-    <table class="table-fixed border table-records">
+    <table class="table-fixed border table-records table-responsive-cards">
         <thead>
             <tr>
                 <th>Título</th>
@@ -45,13 +45,13 @@ async function getAccesses() {
         </thead>
         <tbody>
             <tr v-for="access in accesses" :key="access.id">
-                <td class="border px-4 py-2">
+                <td class="border px-4 py-2" data-label="Título">
                     <i class="bi bi-check-circle-fill text-green-500" title="Visible para el público" v-if="access.is_active"></i>
                     <i class="bi bi-x-circle-fill text-red-500" title="Oculto para el público" v-else></i>
                     {{ access.title }}
                 </td>
-                <td class="border px-4 py-2">{{ access.password }}</td>
-                <td class="border px-4 py-2 text-center">
+                <td class="border px-4 py-2" data-label="Contraseña">{{ access.password }}</td>
+                <td class="border px-4 py-2 text-center" data-label="Acciones">
                     <PrimaryButton class="m-1" @click="editAccess(access)">
                         <i class="bi bi-pencil"></i>
                         Editar
