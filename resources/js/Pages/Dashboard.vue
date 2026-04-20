@@ -11,8 +11,6 @@ import Reservation from '@/Components/Reservation.vue';
 import { ModalsContainer, useModal } from 'vue-final-modal'
 import ModalTerms from '@/Modals/Terms.vue';
 
-
-
 const isLoading = ref(false);
 const reservations = ref([]);
 
@@ -138,11 +136,8 @@ function updateCalendarAttrs() {
             </div>
         </div>
 
-        <div class="px-3 lg:mx-12">
-            <Label class="font-bold">Mis reservas</Label>
-            <div class="border border-slate-300 rounded p-4 bg-white">
-                <Reservation v-if="!isLoading" @refresh="getReservations" />
-            </div>
+        <div class="px-3 lg:mx-12 mt-4 pb-10">
+            <Reservation v-if="!isLoading" @refresh="getReservations" />
         </div>
         <LoadingScreen :show="isLoading" />
         <ModalsContainer />
