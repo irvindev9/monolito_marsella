@@ -1,0 +1,88 @@
+.mrs-root {
+    --ink: #1c2633;
+    --ink-2: #2A4B6D;
+    --ink-soft: #5d6b7a;
+    --muted: #94a0ad;
+    --line: #eceef1;
+    --line-2: #f3f4f6;
+    --bg: #fafbfc;
+    --card: #ffffff;
+    --radius: 10px;
+    --radius-sm: 6px;
+
+    padding: 12px;
+    font-family: 'Nunito', system-ui, -apple-system, sans-serif;
+    color: var(--ink);
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+}
+
+.mrs-root * { box-sizing: border-box; }
+
+.mrs-container {
+    width: 100%;
+    margin: 0 auto;
+}
+@media (min-width: 1024px) {
+    .mrs-container { width: 75%; padding: 0 3rem; }
+}
+
+.mrs-reservations { margin-top: 24px; padding-bottom: 40px; }
+
+.mrs-page-head {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
+    margin-bottom: 18px;
+}
+.mrs-page-head h2 { font-size: 22px; margin: 0; font-weight: 700; }
+
+.mrs-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 14px;
+    margin-bottom: 14px;
+}
+.mrs-calendar-card { padding: 10px; }
+
+.mrs-legend-title {
+    font-size: 11px; font-weight: 700; color: var(--ink);
+    text-transform: uppercase; letter-spacing: .06em;
+    margin-bottom: 8px;
+}
+.mrs-legend-items {
+    display: flex; gap: 18px; flex-wrap: wrap;
+    font-size: 13px; color: var(--ink-soft);
+}
+.mrs-legend-item { display: inline-flex; align-items: center; gap: 8px; }
+.mrs-legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+.mrs-legend-dot.approved { background: #c9dcee; }
+.mrs-legend-dot.pending { background: var(--ink-2); width: 6px; height: 6px; }
+
+.mrs-actions {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; flex-wrap: wrap;
+    padding: 6px 4px 2px;
+}
+.mrs-selected { display: inline-flex; flex-direction: column; gap: 2px; }
+.mrs-selected-label {
+    color: var(--ink-soft); font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .06em;
+}
+.mrs-selected-value { font-weight: 700; font-variant-numeric: tabular-nums; }
+
+.mrs-btn {
+    appearance: none; border: 1px solid var(--line); background: var(--card); color: var(--ink);
+    font: inherit; font-size: 13px; font-weight: 600;
+    padding: 9px 16px; border-radius: 6px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: all .15s ease;
+}
+.mrs-btn:hover { background: var(--line-2); }
+.mrs-btn-primary {
+    background: var(--ink); color: #fff; border-color: var(--ink);
+}
+.mrs-btn-primary:hover { background: #111821; border-color: #111821; }
+.mrs-btn.is-disabled,
+.mrs-btn:disabled {
+    opacity: .5; cursor: not-allowed; pointer-events: none;
+}

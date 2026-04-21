@@ -2,10 +2,9 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import LoadingScreen from '@/Components/LoadingScreen.vue';
 import { Head } from '@inertiajs/vue3';
-import { Calendar, DatePicker } from 'v-calendar';
-import { ref, onMounted } from 'vue';
-import { format } from 'date-fns';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { DatePicker } from 'v-calendar';
+import { ref, computed, onMounted } from 'vue';
+import { format, isSameDay } from 'date-fns';
 import { toast } from 'vue3-toastify';
 import Reservation from '@/Components/Reservation.vue';
 import { ModalsContainer, useModal } from 'vue-final-modal'
@@ -16,6 +15,14 @@ const reservations = ref([]);
 
 const attrs = ref([]);
 const pickDate = ref(new Date());
+
+const isDateTaken = computed(() => {
+    if (!pickDate.value) return false;
+    return reservations.value.some((r) =>
+        (r.is_approved === 1 || r.is_approved === 0) &&
+        isSameDay(new Date(r.reservation_date), pickDate.value)
+    );
+});
 
 async function reserveDate() {
     isLoading.value = true;
@@ -72,7 +79,7 @@ function updateCalendarAttrs() {
                 key: 'today',
                 highlight: {
                     color: 'blue',
-                    fillMode: 'solid',
+                    fillMode: 'light',
                     contentClass: 'italic',
                 },
                 dates: new Date(reservation.reservation_date),
@@ -103,43 +110,53 @@ function updateCalendarAttrs() {
     <Head title="Terraza" />
 
     <AuthenticatedLayout>
-        <div class="lg:flex p-3">
-            <div class="sm:w-full lg:w-1/4 mx-auto sm:px-3 lg:px-12 mb-5">
-                <Label class="font-bold">Reservar fecha</Label>
-                <DatePicker expanded v-model="pickDate" timezone="America/Denver" />
-                <div class="block">
-                    Fecha seleccionada: {{ pickDate ? format(pickDate, 'dd/MM/yyyy') : '--/--/----' }} <br>
-                    <PrimaryButton class="my-3" @click="open">
-                        <div v-if="!isLoading">
-                            Reservar fecha
-                        </div>
-                        <div v-else>
-                            Guardando...
-                        </div>
-                    </PrimaryButton>
+        <div class="mrs-root">
+            <div class="mrs-container">
+                <div class="mrs-page-head">
+                    <h2>Reservar fecha</h2>
                 </div>
-            </div>
-            <div class="sm:w-full lg:w-3/4 mx-auto sm:px-3 lg:px-12">
-                <Label class="font-bold">Reservaciones</Label>
-                <Calendar expanded :attributes="attrs" timezone="America/Denver" />
-                <div class="w-full bg-white rounded border border-slate-300 mt-3 p-3">
-                    <Label class="font-bold">Representación gráfica de las reservas</Label>
-                    <div class="flex space-x-4">
-                        <div>
-                            <i class="bi bi-circle-fill text-blue"></i> Reservado
+
+                <div class="mrs-card mrs-legend">
+                    <div class="mrs-legend-title">Representación gráfica de las reservas</div>
+                    <div class="mrs-legend-items">
+                        <div class="mrs-legend-item">
+                            <span class="mrs-legend-dot approved"></span> Reservado
                         </div>
-                        <div>
-                            <i class="bi bi-circle-fill text-xs text-blue font-xs"></i> En espera de aprobación
+                        <div class="mrs-legend-item">
+                            <span class="mrs-legend-dot pending"></span> En espera de aprobación
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <div class="px-3 lg:mx-12 mt-4 pb-10">
-            <Reservation v-if="!isLoading" @refresh="getReservations" />
+                <div class="mrs-card mrs-calendar-card">
+                    <DatePicker expanded v-model="pickDate" :attributes="attrs" timezone="America/Denver" />
+                </div>
+
+                <div class="mrs-actions">
+                    <div class="mrs-selected">
+                        <span class="mrs-selected-label">Fecha seleccionada</span>
+                        <span class="mrs-selected-value">{{ pickDate ? format(pickDate, 'dd/MM/yyyy') : '--/--/----' }}</span>
+                    </div>
+                    <button
+                        class="mrs-btn mrs-btn-primary"
+                        :class="{ 'is-disabled': isDateTaken || isLoading }"
+                        :disabled="isDateTaken || isLoading"
+                        @click="open"
+                    >
+                        <span v-if="isLoading">Guardando...</span>
+                        <span v-else-if="isDateTaken">Fecha ocupada</span>
+                        <span v-else>Reservar fecha</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="mrs-container mrs-reservations">
+                <Reservation v-if="!isLoading" @refresh="getReservations" />
+            </div>
         </div>
         <LoadingScreen :show="isLoading" />
         <ModalsContainer />
     </AuthenticatedLayout>
 </template>
+
+<style scoped src="./Dashboard.css"></style>
