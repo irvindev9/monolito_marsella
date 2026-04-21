@@ -225,18 +225,19 @@
 
 @media (max-width: 760px) {
     .mrs-rv-row {
-        grid-template-columns: 44px 1fr auto;
+        grid-template-columns: 44px minmax(0, 1fr);
         grid-template-areas:
-            "date main action"
-            "date meta action";
+            "date main"
+            "date meta"
+            "date action";
         gap: 10px;
-        row-gap: 2px;
+        row-gap: 4px;
     }
-    .mrs-rv-row > .mrs-rv-date { grid-area: date; }
+    .mrs-rv-row > .mrs-rv-date { grid-area: date; align-self: start; }
     .mrs-rv-row > .mrs-rv-main { grid-area: main; }
     .mrs-rv-row > .mrs-status-pill { grid-area: meta; justify-self: start; margin-top: 4px; }
     .mrs-rv-row > .mrs-rv-meta-col { display: none; }
-    .mrs-rv-row > .mrs-btn,
-    .mrs-rv-row > .mrs-action-placeholder { grid-area: action; align-self: start; }
+    .mrs-rv-row > .mrs-btn { grid-area: action; justify-self: start; margin-top: 6px; }
+    .mrs-rv-row > .mrs-action-placeholder { display: none; }
     .mrs-rv-date .dd { font-size: 18px; }
 }
