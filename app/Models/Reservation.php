@@ -25,4 +25,9 @@ class Reservation extends Model
     {
         return $this->belongsTo(User::class, 'approved_by');
     }
+
+    public function cleaningReport()
+    {
+        return $this->hasOne(CleaningReport::class);
+    }
 }

@@ -65,6 +65,7 @@ async function saveAddress() {
         house_id: selectAddress.value,
         phone: props.editUser.phone,
         password: props.editUser.password,
+        is_primary: props.editUser.is_primary ?? false,
     });
 
     toast.success('Domicilio asignado');
@@ -132,6 +133,12 @@ async function saveAddress() {
                     <input type="password" class="border rounded p-2 read-only:bg-gray-100" v-model="editUser.password" />
                 </div>
             </div>
+        </div>
+        <div class="flex items-center px-1 my-3">
+            <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" v-model="editUser.is_primary" class="w-4 h-4" />
+                <span class="font-bold">Usuario principal del domicilio</span>
+            </label>
         </div>
         <div class="flex flex-row-reverse">
             <PrimaryButton class="mt-1" @click="saveAddress">

@@ -213,6 +213,10 @@ onBeforeUnmount(() => {
 
                 <span :class="['mrs-status-pill', statusOf(r).cls]">{{ statusOf(r).label }}</span>
 
+                <span v-if="r.is_approved === 1" :class="['mrs-status-pill', r.cleaning_supervised ? 'mrs-status-approved' : 'mrs-status-pending']">
+                    {{ r.cleaning_supervised ? 'Limpieza supervisada' : 'Pendiente supervisión' }}
+                </span>
+
                 <div class="mrs-rv-meta-col">
                     <span style="font-variant-numeric: tabular-nums;">#MRS-{{ String(r.id).padStart(5, '0') }}</span>
                     <span v-if="r.is_approved === 1 || r.is_approved === 0"

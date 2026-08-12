@@ -73,6 +73,11 @@ onMounted(async () => {
                     <i class="bi bi-lock"></i> Accesos
                 </a>
             </li>
+            <li class="list-item" @click="store.setActiveTab('cleaningCriteria')">
+                <a href="#">
+                    <i class="bi bi-check2-square"></i> Criterios de limpieza
+                </a>
+            </li>
         </ul>
     </div>
 </template>

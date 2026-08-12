@@ -23,5 +23,7 @@ class DatabaseSeeder extends Seeder
         $this->call(StreetSeeder::class);
 
         $this->call(ConfigSeeder::class);
+
+        $this->call(CleaningCriteriaSeeder::class);
     }
 }

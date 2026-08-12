@@ -20,4 +20,10 @@ class House extends Model
     {
         return $this->hasMany(User::class);
     }
+
+    public function primaryUser()
+    {
+        return $this->users()->where('is_primary', true)->first()
+            ?? $this->users()->first();
+    }
 }

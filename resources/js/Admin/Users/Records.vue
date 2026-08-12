@@ -40,7 +40,12 @@ async function deleteUser(id) {
         </thead>
         <tbody>
             <tr v-for="user in users" :key="user.id">
-                <td class="border px-4 py-2" data-label="Nombre">{{ user.name }}</td>
+                <td class="border px-4 py-2" data-label="Nombre">
+                    {{ user.name }}
+                    <span v-if="user.is_primary" class="inline-flex items-center gap-1 text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full ml-1" title="Usuario principal">
+                        <i class="bi bi-star-fill"></i> Principal
+                    </span>
+                </td>
                 <td class="border px-4 py-2" data-label="Email">{{ user.email }}</td>
                 <td class="border px-4 py-2" data-label="Domicilio">{{ user.house ? `${user.house.street.name} ${user.house.house_number}` : '' }}
                 </td>

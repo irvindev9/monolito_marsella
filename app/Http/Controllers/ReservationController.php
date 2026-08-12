@@ -152,9 +152,34 @@ class ReservationController extends Controller
      */
     public function show(string $id)
     {
-        $reservation = Reservation::where('house_id', $id)->where('is_visible', 1)->with(['house.street', 'user'])->orderBy('is_approved', 'asc')->get();
+        $reservations = Reservation::where('house_id', $id)
+            ->where('is_visible', 1)
+            ->with(['house.street', 'user', 'cleaningReport'])
+            ->orderBy('is_approved', 'asc')
+            ->get();
 
-        return response()->json($reservation);
+        foreach ($reservations as $reservation) {
+            $prevRes = Reservation::where('is_approved', 1)
+                ->where('reservation_date', '<', $reservation->reservation_date)
+                ->where('house_id', '!=', $reservation->house_id)
+                ->orderBy('reservation_date', 'desc')
+                ->first();
+
+            $prevReported = false;
+            if (!$prevRes) {
+                $prevReported = true;
+            } else {
+                $prevReported = \App\Models\CleaningReport::where('reservation_id', $prevRes->id)
+                    ->whereNotNull('completed_at')
+                    ->exists();
+            }
+
+            $ownReported = $reservation->cleaningReport && $reservation->cleaningReport->completed_at !== null;
+
+            $reservation->cleaning_supervised = $prevReported || $ownReported;
+        }
+
+        return response()->json($reservations);
     }
 
     /**
@@ -164,15 +189,34 @@ class ReservationController extends Controller
     {
         $reservations = Reservation::where('is_approved', 1);
 
-        if ($request->showAll == false || $request->showAll == 'false' || !isset($request->showAll ) ) {
+        if (($request->showAll == false || $request->showAll == 'false' || !isset($request->showAll)) 
+            && !$request->filled('year') && !$request->filled('month')) {
             $reservations = $reservations->where('reservation_date', '>=', date('Y-m-d 12:00:00'));
         }
 
-        $reservations = $reservations->with(['house.street', 'user', 'approvedBy'])
-            ->orderBy('reservation_date', 'asc')->get();
-        
+        if ($request->filled('year')) {
+            $reservations = $reservations->whereYear('reservation_date', $request->year);
+        }
 
-        return response()->json($reservations);
+        if ($request->filled('month')) {
+            $reservations = $reservations->whereMonth('reservation_date', $request->month);
+        }
+
+        $reservations = $reservations->with([
+            'house.street',
+            'user',
+            'approvedBy',
+            'cleaningReport.reviewer',
+            'cleaningReport.criteria.criteria'
+        ])->orderBy('reservation_date', 'asc')->get();
+
+        $minDate = Reservation::where('is_approved', 1)->min('reservation_date');
+        $minYear = $minDate ? (int)date('Y', strtotime($minDate)) : (int)date('Y');
+
+        return response()->json([
+            'events' => $reservations,
+            'minYear' => $minYear,
+        ]);
     }
 
     /**

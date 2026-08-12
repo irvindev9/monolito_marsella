@@ -8,29 +8,45 @@ const events = ref([]);
 const event = ref(null);
 const showAll = ref(false);
 const editForm = ref(false);
+const minYear = ref(new Date().getFullYear());
+
+const currentFilters = ref({ showAll: false, year: '', month: '' });
 
 onMounted(async () => {
     await getEvents();
 });
 
-async function getEvents() {
+async function getEvents(filters = {}) {
+    if (filters && typeof filters === 'object') {
+        currentFilters.value = { ...currentFilters.value, ...filters };
+    } else if (typeof filters === 'boolean') {
+        currentFilters.value.showAll = filters;
+    }
+
+    showAll.value = currentFilters.value.showAll;
     events.value = [];
     await axios.get('/api/events', {
             params: {
-                showAll: showAll.value
+                showAll: currentFilters.value.showAll,
+                year: currentFilters.value.year,
+                month: currentFilters.value.month,
             }
         })
         .then(response => {
-            events.value = response.data;
+            if (response.data && response.data.events) {
+                events.value = response.data.events;
+                minYear.value = response.data.minYear || new Date().getFullYear();
+            } else {
+                events.value = Array.isArray(response.data) ? response.data : [];
+            }
         })
         .catch(error => {
             console.log(error);
         });
 }
 
-async function reloadEvents(updated) {
-    showAll.value = updated;
-    await getEvents();
+async function reloadEvents(payload) {
+    await getEvents(payload);
 }
 
 function editEvent(eventId) {
@@ -49,7 +65,7 @@ async function close() {
     <Head title="Eventos" />
     <h3 class="font-bold py-3">Eventos</h3>
 
-    <Records :events="events" v-if="!editForm && events.length > 0" @edit="editEvent" @getEvents="reloadEvents" :showAll="showAll" />
+    <Records :events="events" :minYear="minYear" v-if="!editForm" @edit="editEvent" @getEvents="reloadEvents" :showAll="showAll" />
 
     <FormRecord :event="event" v-if="editForm" @close="close" />
 </template>

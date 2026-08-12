@@ -9,6 +9,8 @@ use App\Http\Controllers\ConfigController;
 use App\Http\Controllers\RestrictionController;
 use App\Http\Controllers\DirectoryController;
 use App\Http\Controllers\PasswordController;
+use App\Http\Controllers\CleaningReportController;
+use App\Http\Controllers\CleaningCriteriaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +38,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/directory/public', [DirectoryController::class, 'index_public'])->name('directory.index_public');
 
     Route::get('/passwords/public/{reservationId}', [PasswordController::class, 'indexPublic'])->name('passwords.indexPublic');
+
+    Route::get('/cleaning/dashboard', [CleaningReportController::class, 'dashboardData'])->name('cleaning.dashboard');
+    Route::post('/cleaning/report', [CleaningReportController::class, 'store'])->name('cleaning.report.store');
 });
 
 Route::middleware(['auth:sanctum', 'admin:sanctum'])->group(function () {
@@ -78,4 +83,9 @@ Route::middleware(['auth:sanctum', 'admin:sanctum'])->group(function () {
     Route::post('/passwords', [PasswordController::class, 'store'])->name('passwords.store');
     Route::put('/passwords/{id}', [PasswordController::class, 'update'])->name('passwords.update');
     Route::delete('/passwords/{id}', [PasswordController::class, 'destroy'])->name('passwords.destroy');
+
+    Route::get('/cleaning-criteria', [CleaningCriteriaController::class, 'index'])->name('cleaning-criteria.index');
+    Route::post('/cleaning-criteria', [CleaningCriteriaController::class, 'store'])->name('cleaning-criteria.store');
+    Route::put('/cleaning-criteria/{id}', [CleaningCriteriaController::class, 'update'])->name('cleaning-criteria.update');
+    Route::delete('/cleaning-criteria/{id}', [CleaningCriteriaController::class, 'destroy'])->name('cleaning-criteria.destroy');
 });

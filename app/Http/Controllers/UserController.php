@@ -68,6 +68,16 @@ class UserController extends Controller
             $user->password = bcrypt($request->password);
         }
 
+        if ($request->has('is_primary')) {
+            if ($request->is_primary && $user->house_id) {
+                // Reset other users in the same house
+                User::where('house_id', $user->house_id)
+                    ->where('id', '!=', $user->id)
+                    ->update(['is_primary' => false]);
+            }
+            $user->is_primary = $request->is_primary;
+        }
+
         $user->save();
 
         return response()->json(['message' => 'User updated successfully']);
