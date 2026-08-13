@@ -229,7 +229,8 @@ function updateCalendarAttrs() {
                         <!-- Accordion Body -->
                         <div v-show="item.isOpen" class="mrs-accordion-body">
                             <div class="mrs-cleaning-content w-full">
-                                <p>Tu próximo evento se acerca, para tener una mejor experiencia te pedimos de favor que nos ayudes a supervisar la limpieza de la terraza del evento anterior.</p>
+                                <p>Tu próximo evento se acerca, para tener una mejor experiencia te pedimos de favor que nos ayudes a supervisar la limpieza del inmueble del evento anterior.</p>
+                                <p class="mt-1 font-semibold text-gray-700">Fecha del evento anterior prevista: {{ fmtLong(item.previous_reservation_date) }}</p>
                                 
                                 <div class="my-2 p-3 bg-white border rounded">
                                     <p class="mrs-cleaning-host-info">
