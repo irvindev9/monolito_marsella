@@ -13,10 +13,11 @@ const emit = defineEmits(['refresh']);
 const user = usePage().props.auth.user;
 
 const myReservations = ref([]);
-const configs = ref([]);
+const paymentConfig = ref({ mdtpr: 7, bank: '', clabe: '', beneficiary: '' });
 const passwordsByReservation = ref({});
 const filter = ref('upcoming');
 const confirmTarget = ref(null);
+const transferTarget = ref(null);
 const now = ref(new Date());
 
 let nowTimer = null;
@@ -27,13 +28,24 @@ const FILTERS = [
     { key: 'history',  label: 'Historial' },
 ];
 
-const daysToPay = computed(() => {
-    const cfg = configs.value.find(c => c.slug === 'mdtpr');
-    return cfg ? parseInt(cfg.setting) : 7;
+const daysToPay = computed(() => paymentConfig.value.mdtpr || 7);
+
+const hasPaymentConfig = computed(() => {
+    const { bank, clabe, beneficiary } = paymentConfig.value;
+    return Boolean(bank?.trim() && clabe?.trim() && beneficiary?.trim());
 });
 
 function payment(r) {
     return paymentInfo(r, now.value, daysToPay.value);
+}
+
+function transferConcept(r) {
+    const d = new Date(r.reservation_date);
+    const mo = MONTHS_ES_SHORT[d.getMonth()];
+    const moCap = mo.charAt(0).toUpperCase() + mo.slice(1);
+    const street = r.house?.street?.name ?? '';
+    const num = r.house?.house_number ?? '';
+    return `${d.getDate()} ${moCap} ${street} ${num}`.trim().replace(/\s+/g, ' ');
 }
 
 async function getReservations() {
@@ -58,10 +70,10 @@ async function fetchPasswordsForUpcoming() {
     passwordsByReservation.value = next;
 }
 
-async function getConfig() {
+async function getPaymentConfig() {
     try {
-        const { data } = await axios.get('/api/configs');
-        configs.value = data;
+        const { data } = await axios.get('/api/configs/payment');
+        paymentConfig.value = data;
     } catch (error) {
         // silent
     }
@@ -123,7 +135,7 @@ function isRevealed(r) {
 }
 
 onMounted(async () => {
-    await getConfig();
+    await getPaymentConfig();
     await getReservations();
     nowTimer = setInterval(() => { now.value = new Date(); }, 1000);
 });
@@ -232,12 +244,20 @@ onBeforeUnmount(() => {
                     </span>
                 </div>
 
-                <button v-if="filter !== 'history' && r.is_approved === 0" class="mrs-btn mrs-btn-sm mrs-btn-danger" @click.stop="onArchiveClick(r)">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M4 7h16M10 11v6M14 11v6M6 7l1 13a1 1 0 001 1h8a1 1 0 001-1l1-13M9 7V4h6v3"/>
-                    </svg>
-                    Cancelar solicitud
-                </button>
+                <div v-if="filter !== 'history' && r.is_approved === 0" class="mrs-rv-actions">
+                    <button v-if="hasPaymentConfig && payment(r) && !payment(r).expired" class="mrs-btn mrs-btn-sm mrs-btn-primary" @click.stop="transferTarget = r">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M3 10h18M5 6l7-3 7 3M4 10v8M9 10v8M15 10v8M20 10v8M3 18h18"/>
+                        </svg>
+                        Transferencia
+                    </button>
+                    <button class="mrs-btn mrs-btn-sm mrs-btn-danger" @click.stop="onArchiveClick(r)">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M4 7h16M10 11v6M14 11v6M6 7l1 13a1 1 0 001 1h8a1 1 0 001-1l1-13M9 7V4h6v3"/>
+                        </svg>
+                        Cancelar solicitud
+                    </button>
+                </div>
                 <button v-else-if="filter !== 'history' && r.is_approved === 1" class="mrs-btn mrs-btn-sm mrs-btn-ghost" @click.stop="onArchiveClick(r)">
                     <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <rect x="3" y="4" width="18" height="4" rx="1"/>
@@ -252,6 +272,66 @@ onBeforeUnmount(() => {
             <h3>Sin reservas por aquí</h3>
             <p>No hay reservas en esta vista. Prueba con otro filtro.</p>
         </div>
+
+        <transition name="mrs-fade">
+            <div v-if="transferTarget" class="mrs-backdrop" @click="transferTarget = null">
+                <div class="mrs-dialog" @click.stop>
+                    <h3>Pago por transferencia</h3>
+                    <p>Único método de pago permitido. Realiza tu transferencia con los siguientes datos:</p>
+
+                    <img
+                        v-if="paymentConfig.bank === 'BBVA'"
+                        src="/images/bbva.png"
+                        alt="BBVA"
+                        class="mrs-bank-logo"
+                    />
+
+                    <div class="mrs-transfer-list">
+                        <div class="mrs-transfer-item">
+                            <span class="lbl">Banco</span>
+                            <span class="val">{{ paymentConfig.bank || 'No configurado' }}</span>
+                        </div>
+                        <div class="mrs-transfer-item">
+                            <span class="lbl">CLABE interbancaria</span>
+                            <span class="val tabular">
+                                {{ paymentConfig.clabe || 'No configurada' }}
+                                <button v-if="paymentConfig.clabe" class="mrs-copy" @click="copyValue(paymentConfig.clabe)" title="Copiar">
+                                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                        <rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/>
+                                    </svg>
+                                </button>
+                            </span>
+                        </div>
+                        <div class="mrs-transfer-item">
+                            <span class="lbl">Nombre de beneficiario</span>
+                            <span class="val">
+                                {{ paymentConfig.beneficiary || 'No configurado' }}
+                                <button v-if="paymentConfig.beneficiary" class="mrs-copy" @click="copyValue(paymentConfig.beneficiary)" title="Copiar">
+                                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                        <rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/>
+                                    </svg>
+                                </button>
+                            </span>
+                        </div>
+                        <div class="mrs-transfer-item highlight">
+                            <span class="lbl">Concepto</span>
+                            <span class="val">
+                                {{ transferConcept(transferTarget) }}
+                                <button class="mrs-copy" @click="copyValue(transferConcept(transferTarget))" title="Copiar">
+                                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                        <rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/>
+                                    </svg>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="actions">
+                        <button class="mrs-btn mrs-btn-sm" @click="transferTarget = null">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </transition>
 
         <transition name="mrs-fade">
             <div v-if="confirmTarget" class="mrs-backdrop" @click="confirmTarget = null">

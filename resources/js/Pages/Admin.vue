@@ -12,6 +12,7 @@ import RestrictionList from '@/Admin/RestrictionList.vue';
 import Directory from '@/Admin/Directory.vue';
 import Access from '@/Admin/Access.vue';
 import CleaningCriteria from '@/Admin/CleaningCriteria.vue';
+import PaymentData from '@/Admin/PaymentData.vue';
 import { Head } from '@inertiajs/vue3';
 import { computed, ref, watch } from 'vue';
 import { useAdminStore } from '@/Stores/adminStore';
@@ -76,6 +77,8 @@ watch(() => store.activeTab, () => {
                 <Access v-if="activeTab === 'access'" />
 
                 <CleaningCriteria v-if="activeTab === 'cleaningCriteria'" />
+
+                <PaymentData v-if="activeTab === 'paymentData'" />
             </div>
         </div>
         <LoadingScreen :show="isLoading" />

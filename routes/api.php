@@ -41,6 +41,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/cleaning/dashboard', [CleaningReportController::class, 'dashboardData'])->name('cleaning.dashboard');
     Route::post('/cleaning/report', [CleaningReportController::class, 'store'])->name('cleaning.report.store');
+
+    Route::get('/configs/payment', [ConfigController::class, 'paymentInfo'])->name('config.payment');
 });
 
 Route::middleware(['auth:sanctum', 'admin:sanctum'])->group(function () {

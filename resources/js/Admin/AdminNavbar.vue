@@ -78,6 +78,11 @@ onMounted(async () => {
                     <i class="bi bi-check2-square"></i> Criterios de limpieza
                 </a>
             </li>
+            <li class="list-item" @click="store.setActiveTab('paymentData')">
+                <a href="#">
+                    <i class="bi bi-bank"></i> Datos de pago
+                </a>
+            </li>
         </ul>
     </div>
 </template>
