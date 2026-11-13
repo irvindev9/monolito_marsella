@@ -59,6 +59,7 @@ Route::middleware(['auth:sanctum', 'admin:sanctum'])->group(function () {
     })->name('streets.index');
 
     Route::get('/configs', [ConfigController::class, 'index'])->name('config.index');
+    Route::get('/configs/payment-logs', [ConfigController::class, 'paymentLogs'])->name('config.paymentLogs');
     Route::put('/configs', [ConfigController::class, 'update'])->name('config.update');
 
     Route::get('/reservations/approval-requests', [ReservationController::class, 'approvalRequestsList'])->name('reservations.approvalRequestsList');
