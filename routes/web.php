@@ -44,6 +44,6 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/admin', function () {
     return Inertia::render('Admin');
-})->middleware(['auth', 'admin'])->name('admin');
+})->middleware(['auth', 'verified', 'admin'])->name('admin');
 
 require __DIR__.'/auth.php';

@@ -39,6 +39,7 @@ class HandleInertiaRequests extends Middleware
                     'location' => $request->url(),
                 ]);
             },
+            'recaptchaSiteKey' => config('services.recaptcha.site_key'),
         ]);
     }
 }

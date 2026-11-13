@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\EmailVerificationCode;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -16,8 +17,20 @@ class EmailVerificationPromptController extends Controller
      */
     public function __invoke(Request $request): RedirectResponse|Response
     {
-        return $request->user()->hasVerifiedEmail()
-                    ? redirect()->intended(RouteServiceProvider::HOME)
-                    : Inertia::render('Auth/VerifyEmail', ['status' => session('status')]);
+        $user = $request->user();
+
+        if ($user->hasVerifiedEmail()) {
+            return redirect()->intended(RouteServiceProvider::HOME);
+        }
+
+        if (! EmailVerificationCode::hasActiveCode($user) && EmailVerificationCode::remainingCooldown($user) === 0) {
+            EmailVerificationCode::issueFor($user);
+        }
+
+        return Inertia::render('Auth/VerifyEmail', [
+            'status' => session('status'),
+            'cooldownSeconds' => EmailVerificationCode::remainingCooldown($user),
+            'email' => $user->email,
+        ]);
     }
 }

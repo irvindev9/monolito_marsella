@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\EmailVerificationCode;
 use App\Models\User;
-use App\Providers\RouteServiceProvider;
-use Illuminate\Auth\Events\Registered;
+use App\Rules\RecaptchaV3;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -33,9 +33,10 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:'.User::class,
+            'email' => 'required|string|email:rfc,strict|max:255|unique:'.User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'phone' => 'required|numeric|digits_between:10,13',
+            'recaptcha_token' => [new RecaptchaV3('register')],
         ]);
 
         $user = User::create([
@@ -45,10 +46,10 @@ class RegisteredUserController extends Controller
             'phone' => $request->phone ?? null,
         ]);
 
-        event(new Registered($user));
+        EmailVerificationCode::issueFor($user);
 
         Auth::login($user);
 
-        return redirect(RouteServiceProvider::HOME);
+        return redirect()->route('verification.notice');
     }
 }
