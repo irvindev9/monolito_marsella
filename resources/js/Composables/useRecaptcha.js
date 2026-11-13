@@ -1,7 +1,14 @@
-import { onMounted } from 'vue';
+import { onMounted, onUnmounted } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 
 let scriptPromise = null;
+
+function setBadgeVisible(visible) {
+    const badge = document.querySelector('.grecaptcha-badge');
+    if (badge) {
+        badge.style.display = visible ? '' : 'none';
+    }
+}
 
 function loadRecaptchaScript(siteKey) {
     if (window.grecaptcha) return Promise.resolve(window.grecaptcha);
@@ -27,10 +34,15 @@ export function useRecaptcha() {
     const page = usePage();
 
     onMounted(() => {
+        setBadgeVisible(true);
         const siteKey = page.props.recaptchaSiteKey;
         if (siteKey) {
             loadRecaptchaScript(siteKey).catch(() => {});
         }
+    });
+
+    onUnmounted(() => {
+        setBadgeVisible(false);
     });
 
     async function executeRecaptcha(action) {
