@@ -60,6 +60,9 @@
         }
     },
     "config": {
+        "platform": {
+            "php": "8.2.35"
+        },
         "audit": {
             "block": false
         },
