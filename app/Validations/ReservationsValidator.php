@@ -108,6 +108,18 @@ class ReservationsValidator
         return $this->errors;
     }
 
+    public function currentSeasonRequestCount(): int
+    {
+        [$firstMonth, $lastMonth] = $this->monthsRange();
+        $year = date('Y');
+        $start = sprintf('%s-%02d-01 00:00:00', $year, $firstMonth);
+        $end = date('Y-m-t 23:59:59', strtotime(sprintf('%s-%02d-01', $year, $lastMonth)));
+
+        return Reservation::where('house_id', $this->houseId)
+            ->whereBetween('reservation_date', [$start, $end])
+            ->count();
+    }
+
     public function validateAdmin(){
         if (!$this->houseId) {
             $this->errors[] = 'No se te ha asignado un domicilio';

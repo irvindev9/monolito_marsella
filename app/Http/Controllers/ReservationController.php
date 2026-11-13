@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ReservationNotification;
 use App\Models\Reservation;
 use App\Models\House;
+use App\Models\User;
 use App\Validations\ReservationsValidator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use App\Models\Config;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class ReservationController extends Controller
 {
@@ -59,12 +63,17 @@ class ReservationController extends Controller
 
         $reservation->save();
 
-        if ($reservation->is_approved == 1){
+        if ($reservation->is_approved == 1) {
+            $this->notify([$reservation->user?->email], $reservation, 'approved');
             $this->rejectReservations($reservation->id, $reservation->reservation_date);
 
             return response()->json([
                 'message' => 'Reservación actualizada exitosamente, las demás reservaciones para esta fecha han sido rechazadas!',
             ]);
+        }
+
+        if ($reservation->is_approved == 2) {
+            $this->notify([$reservation->user?->email], $reservation, 'rejected');
         }
 
         return response()->json([
@@ -77,11 +86,41 @@ class ReservationController extends Controller
      */
     public function rejectReservations($approved_id, $reservation_date)
     {
-        $reservations = Reservation::where('reservation_date', $reservation_date)->where('is_approved', 0)->where('id', '!=', $approved_id)->get();
+        $reservations = Reservation::where('reservation_date', $reservation_date)
+            ->where('is_approved', 0)
+            ->where('id', '!=', $approved_id)
+            ->with('user')
+            ->get();
 
         foreach ($reservations as $reservation) {
             $reservation->is_approved = 2;
             $reservation->save();
+            $this->notify([$reservation->user?->email], $reservation, 'rejected');
+        }
+    }
+
+    private function notify(array $emails, Reservation $reservation, string $type, ?int $seasonRequestCount = null): void
+    {
+        $recipients = array_values(array_filter(array_unique($emails)));
+        if (empty($recipients)) {
+            return;
+        }
+
+        if (config('mail.default') === 'resend' && empty(config('services.resend.key')) && empty(config('resend.api_key'))) {
+            Log::warning('No se encontró la API key de Resend (RESEND_KEY); no se envió el correo.', [
+                'reservation_id' => $reservation->id,
+                'type' => $type,
+            ]);
+            return;
+        }
+
+        try {
+            Mail::to($recipients)->send(new ReservationNotification($reservation, $type, $seasonRequestCount));
+        } catch (\Throwable $e) {
+            Log::error('Error al enviar correo de reservación: ' . $e->getMessage(), [
+                'reservation_id' => $reservation->id,
+                'type' => $type,
+            ]);
         }
     }
 
@@ -101,12 +140,15 @@ class ReservationController extends Controller
             return response()->json($errors, 422);
         }
 
-        Reservation::create([
+        $reservation = Reservation::create([
             'house_id' => $user->house_id,
             'user_id' => $user->id,
             'is_signed' => $request->acceptTerms,
             'reservation_date' => date('Y-m-d 12:00:00', strtotime($request->reservation_date)),
         ]);
+
+        $adminEmails = User::where('role_id', 1)->whereNotNull('email')->pluck('email')->all();
+        $this->notify($adminEmails, $reservation, 'created', $validator->currentSeasonRequestCount());
 
         return response()->json([
             'message' => 'Fecha solicitada, en espera de confirmación',
