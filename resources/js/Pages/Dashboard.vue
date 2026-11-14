@@ -32,6 +32,7 @@ const isDateTaken = computed(() => {
 });
 
 async function reserveDate() {
+    if (!pickDate.value) return;
     isLoading.value = true;
     try {
         const { data } = await axios.post('/api/reservations', {
@@ -322,11 +323,12 @@ function updateCalendarAttrs() {
                     </div>
                     <button
                         class="mrs-btn mrs-btn-primary"
-                        :class="{ 'is-disabled': isDateTaken || isLoading }"
-                        :disabled="isDateTaken || isLoading"
+                        :class="{ 'is-disabled': !pickDate || isDateTaken || isLoading }"
+                        :disabled="!pickDate || isDateTaken || isLoading"
                         @click="open"
                     >
                         <span v-if="isLoading">Guardando...</span>
+                        <span v-else-if="!pickDate">Selecciona una fecha</span>
                         <span v-else-if="isDateTaken">Fecha ocupada</span>
                         <span v-else>Reservar fecha</span>
                     </button>
