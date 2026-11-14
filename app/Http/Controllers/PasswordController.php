@@ -24,17 +24,26 @@ class PasswordController extends Controller
     /**
      * Display passwords for public access based on reservation date
      */
-    public function indexPublic(string $reservationId)
+    public function indexPublic(Request $request, string $reservationId)
     {
         $reservation = Reservation::findOrFail($reservationId);
-        
+        $user = $request->user();
+
+        if (
+            $user->role_id !== 1
+            && (int) $reservation->house_id !== (int) $user->house_id
+            && (int) $reservation->user_id !== (int) $user->id
+        ) {
+            abort(403);
+        }
+
         $reservationDate = Carbon::parse($reservation->reservation_date)->startOfDay();
         $today = Carbon::today();
         
         $passwords = Password::where('is_active', 1)->get();
         
-        // If reservation is in the past, mask passwords
-        if ($reservationDate->notEqualTo($today)) {
+        // Only reveal passwords for approved reservations on the day of the event
+        if ((int) $reservation->is_approved !== 1 || $reservationDate->notEqualTo($today)) {
             $passwords->transform(function ($password) {
                 $password->password = '********';
                 return $password;

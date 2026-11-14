@@ -192,8 +192,13 @@ class ReservationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request, string $id)
     {
+        $user = $request->user();
+        if ($user->role_id !== 1 && (int) $id !== (int) $user->house_id) {
+            abort(403);
+        }
+
         $reservations = Reservation::where('house_id', $id)
             ->where('is_visible', 1)
             ->with(['house.street', 'user', 'cleaningReport'])
@@ -282,9 +287,18 @@ class ReservationController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
-        $reservation = Reservation::find($id);
+        $reservation = Reservation::findOrFail($id);
+        $user = $request->user();
+
+        if (
+            $user->role_id !== 1
+            && (int) $reservation->house_id !== (int) $user->house_id
+            && (int) $reservation->user_id !== (int) $user->id
+        ) {
+            abort(403);
+        }
 
         if ($reservation->is_approved == 0) {
             $reservation->delete();
