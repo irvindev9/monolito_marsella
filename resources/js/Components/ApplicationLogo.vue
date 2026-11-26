@@ -1,3 +1,10 @@
 <template>
-    <img src="../../assets/logo.png" alt="Logo" class="flex-shrink-0 object-cover rounded-full btn- w-10 h-10" />
+    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0">
+        <!-- Anillo circular gris oscuro -->
+        <circle cx="50" cy="50" r="45" fill="#ffffff" stroke="#4D4F53" stroke-width="5" />
+        <!-- Figura izquierda (Turquesa): forma la mitad izquierda de la M y el brazo izquierdo de la V -->
+        <polygon points="27,26 27,72 47,55" fill="#3299BB" />
+        <!-- Figura derecha (Azul): forma la mitad derecha de la M y el brazo derecho de la V -->
+        <polygon points="73,26 73,72 34,72" fill="#1877B8" />
+    </svg>
 </template>

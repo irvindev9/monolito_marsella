@@ -15,6 +15,7 @@ const logs = ref([]);
 const bankConfig = computed(() => configs.value.find(c => c.slug === 'payment_bank'));
 const clabeConfig = computed(() => configs.value.find(c => c.slug === 'payment_clabe'));
 const beneficiaryConfig = computed(() => configs.value.find(c => c.slug === 'payment_beneficiary'));
+const feeConfig = computed(() => configs.value.find(c => c.slug === 'payment_fee'));
 
 async function fetchLogs() {
     const { data } = await axios.get('/api/configs/payment-logs');
@@ -44,7 +45,7 @@ function sanitizeClabe(e) {
 async function savePaymentData() {
     store.setIsLoading(true);
     try {
-        const payload = [bankConfig.value, clabeConfig.value, beneficiaryConfig.value].filter(Boolean);
+        const payload = [bankConfig.value, clabeConfig.value, beneficiaryConfig.value, feeConfig.value].filter(Boolean);
         const { data } = await axios.put('/api/configs', payload);
         await fetchLogs();
         toast.success(data.message);
@@ -92,14 +93,26 @@ async function savePaymentData() {
             </div>
         </div>
 
-        <div class="flex flex-col">
-            <label class="font-bold mb-2">Nombre de beneficiario</label>
-            <input
-                type="text"
-                v-model="beneficiaryConfig.setting"
-                placeholder="Nombre completo o razón social"
-                class="border border-gray-300 rounded-md px-3 py-2 outline-none focus:ring-1 focus:ring-blue-600"
-            />
+        <div class="flex flex-col sm:flex-row gap-4">
+            <div class="w-full sm:w-1/2 flex flex-col">
+                <label class="font-bold mb-2">Nombre de beneficiario</label>
+                <input
+                    type="text"
+                    v-model="beneficiaryConfig.setting"
+                    placeholder="Nombre completo o razón social"
+                    class="border border-gray-300 rounded-md px-3 py-2 outline-none focus:ring-1 focus:ring-blue-600"
+                />
+            </div>
+
+            <div v-if="feeConfig" class="w-full sm:w-1/2 flex flex-col">
+                <label class="font-bold mb-2">Cuota</label>
+                <input
+                    type="text"
+                    v-model="feeConfig.setting"
+                    placeholder="Ej: $100.00 MXN"
+                    class="border border-gray-300 rounded-md px-3 py-2 outline-none focus:ring-1 focus:ring-blue-600"
+                />
+            </div>
         </div>
 
         <div class="flex justify-end">

@@ -13,7 +13,7 @@ const emit = defineEmits(['refresh']);
 const user = usePage().props.auth.user;
 
 const myReservations = ref([]);
-const paymentConfig = ref({ mdtpr: 7, bank: '', clabe: '', beneficiary: '' });
+const paymentConfig = ref({ mdtpr: 7, bank: '', clabe: '', beneficiary: '', fee: '' });
 const passwordsByReservation = ref({});
 const filter = ref('upcoming');
 const confirmTarget = ref(null);
@@ -312,6 +312,10 @@ onBeforeUnmount(() => {
                                     </svg>
                                 </button>
                             </span>
+                        </div>
+                        <div class="mrs-transfer-item">
+                            <span class="lbl">Cuota</span>
+                            <span class="val">{{ paymentConfig.fee || 'No configurada' }}</span>
                         </div>
                         <div class="mrs-transfer-item highlight">
                             <span class="lbl">Concepto</span>

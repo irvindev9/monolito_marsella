@@ -18,7 +18,7 @@ class ConfigController extends Controller
 
     public function paymentInfo()
     {
-        $configs = Config::whereIn('slug', ['mdtpr', 'payment_bank', 'payment_clabe', 'payment_beneficiary'])
+        $configs = Config::whereIn('slug', ['mdtpr', 'payment_bank', 'payment_clabe', 'payment_beneficiary', 'payment_fee'])
             ->pluck('setting', 'slug');
 
         return response()->json([
@@ -26,6 +26,7 @@ class ConfigController extends Controller
             'bank' => $configs['payment_bank'] ?? '',
             'clabe' => $configs['payment_clabe'] ?? '',
             'beneficiary' => $configs['payment_beneficiary'] ?? '',
+            'fee' => $configs['payment_fee'] ?? '',
         ]);
     }
 
@@ -80,6 +81,7 @@ class ConfigController extends Controller
             'payment_bank' => 'Banco',
             'payment_clabe' => 'CLABE',
             'payment_beneficiary' => 'Beneficiario',
+            'payment_fee' => 'Cuota',
         ];
         $changes = [];
 
