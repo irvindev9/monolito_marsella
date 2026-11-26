@@ -101,6 +101,10 @@ class ReservationController extends Controller
 
         $reservation->approved_by = $request->user()->id;
 
+        $reservation->rejection_reason = $request->is_approved == 2
+            ? ($request->filled('rejection_reason') ? trim($request->rejection_reason) : null)
+            : null;
+
         $reservation->save();
 
         if ($reservation->is_approved == 1) {
@@ -134,12 +138,13 @@ class ReservationController extends Controller
 
         foreach ($reservations as $reservation) {
             $reservation->is_approved = 2;
+            $reservation->rejection_reason = 'Otra solicitud para esta misma fecha fue aprobada';
             $reservation->save();
             $this->notify([$reservation->user?->email], $reservation, 'rejected');
         }
     }
 
-    private function notify(array $emails, Reservation $reservation, string $type, ?int $seasonRequestCount = null): void
+    private function notify(array $emails, ?Reservation $reservation, string $type, ?int $seasonRequestCount = null): void
     {
         $recipients = array_values(array_filter(array_unique($emails)));
         if (empty($recipients)) {
@@ -148,7 +153,7 @@ class ReservationController extends Controller
 
         if (config('mail.default') === 'resend' && empty(config('services.resend.key')) && empty(config('resend.api_key'))) {
             Log::warning('No se encontró la API key de Resend (RESEND_KEY); no se envió el correo.', [
-                'reservation_id' => $reservation->id,
+                'reservation_id' => $reservation?->id,
                 'type' => $type,
             ]);
             return;
@@ -158,7 +163,7 @@ class ReservationController extends Controller
             Mail::to($recipients)->send(new ReservationNotification($reservation, $type, $seasonRequestCount));
         } catch (\Throwable $e) {
             Log::error('Error al enviar correo de reservación: ' . $e->getMessage(), [
-                'reservation_id' => $reservation->id,
+                'reservation_id' => $reservation?->id,
                 'type' => $type,
             ]);
         }
@@ -396,14 +401,43 @@ class ReservationController extends Controller
             $validatedDaysToPay = 7;
         }
 
+        $now = now();
+
         $expiredReservations = Reservation::where('is_approved', 0)
-            ->where('created_at', '<', date('Y-m-d H:i:s', strtotime("-$validatedDaysToPay days")))
-            ->get();   
-            
-        
+            ->where('created_at', '<=', $now->copy()->subDays($validatedDaysToPay))
+            ->with('user')
+            ->get();
+
         foreach ($expiredReservations as $reservation) {
-            $reservation->is_approved = 3; // cancelled for expired payment time
+            $reservation->is_approved = 2;
+            $reservation->rejection_reason = 'El plazo para realizar el pago se alcanzó';
             $reservation->save();
+            $this->notify([$reservation->user?->email], $reservation, 'rejected');
+        }
+
+        $pendingReservations = Reservation::where('is_approved', 0)
+            ->with('user')
+            ->get();
+
+        $reminderEmails = [];
+        foreach ($pendingReservations as $reservation) {
+            if (!$reservation->created_at || !$reservation->user?->email) {
+                continue;
+            }
+            $deadline = $reservation->created_at->copy()->addDays($validatedDaysToPay);
+            $secondsRemaining = $deadline->getTimestamp() - $now->getTimestamp();
+
+            // 1-hour rounded window around 48h (171000s..174600s) and 24h (84600s..88200s)
+            $in48hWindow = $secondsRemaining > (48 * 3600 - 1800) && $secondsRemaining <= (48 * 3600 + 1800);
+            $in24hWindow = $secondsRemaining > (24 * 3600 - 1800) && $secondsRemaining <= (24 * 3600 + 1800);
+
+            if ($in48hWindow || $in24hWindow) {
+                $reminderEmails[] = $reservation->user->email;
+            }
+        }
+
+        if (!empty($reminderEmails)) {
+            $this->notify($reminderEmails, null, 'payment_reminder');
         }
 
         return response()->json([

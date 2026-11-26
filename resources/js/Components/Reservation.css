@@ -117,6 +117,9 @@
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .mrs-rv-sub .sep { margin: 0 8px; color: var(--line); }
+.mrs-rv-reason {
+    font-size: 12px; color: #8a3a2a; margin-top: 4px; font-weight: 500;
+}
 
 .mrs-status-pill {
     display: inline-flex; align-items: center; gap: 6px;

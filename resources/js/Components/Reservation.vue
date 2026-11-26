@@ -194,6 +194,9 @@ onBeforeUnmount(() => {
                         <span class="sep">·</span>{{ r.user ? r.user.name : 'Registrado por comité' }}
                         <span class="sep">·</span>Solicitado {{ fmtShort(r.created_at) }}
                     </div>
+                    <div v-if="r.is_approved === 2 && r.rejection_reason" class="mrs-rv-reason">
+                        Motivo: {{ r.rejection_reason }}
+                    </div>
 
                     <div v-if="showAccessFor(r)" class="mrs-rv-accesos">
                         <div class="mrs-access-box">

@@ -41,9 +41,15 @@
             <td style="font-weight:700;border-bottom:1px solid #eceef1;">{{ $address }}</td>
         </tr>
         <tr>
-            <td style="color:#6b7280;">Solicitante</td>
-            <td style="font-weight:700;">{{ $requester }}</td>
+            <td style="color:#6b7280;{{ !$isApproved && $reservation->rejection_reason ? 'border-bottom:1px solid #eceef1;' : '' }}">Solicitante</td>
+            <td style="font-weight:700;{{ !$isApproved && $reservation->rejection_reason ? 'border-bottom:1px solid #eceef1;' : '' }}">{{ $requester }}</td>
         </tr>
+        @if(!$isApproved && $reservation->rejection_reason)
+        <tr>
+            <td style="color:#6b7280;">Motivo</td>
+            <td style="font-weight:700;color:#991b1b;">{{ $reservation->rejection_reason }}</td>
+        </tr>
+        @endif
     </table>
 
     <a href="{{ url('/dashboard') }}"
