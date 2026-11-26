@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\ReservationNotification;
 use App\Models\Reservation;
+use App\Models\ReservationWaitlist;
 use App\Models\House;
 use App\Models\User;
 use App\Validations\ReservationsValidator;
@@ -18,16 +19,55 @@ class ReservationController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $userId = $request->user()?->id;
+
         //reservations of actual year, approved or not approved but visible
         $reservations = Reservation::whereYear('reservation_date', date('Y'))->where(function (Builder $query) {
             $query->where('is_approved', 1)->orWhere(function (Builder $query2) {
                 $query2->where('is_approved', 0)->where('is_visible', 1);
             });
-        })->get();
+        })->withExists([
+            'waitlists as in_waitlist' => fn ($query) => $query->where('user_id', $userId),
+        ])->get();
 
         return response()->json($reservations);
+    }
+
+    /**
+     * Join waitlist for an approved reservation
+     */
+    public function joinWaitlist(Request $request)
+    {
+        $user = $request->user();
+        $reservation = Reservation::where('id', $request->reservation_id)
+            ->where('is_approved', 1)
+            ->firstOrFail();
+
+        if ((int) $reservation->house_id === (int) $user->house_id) {
+            return response()->json(['Esta reserva ya pertenece a tu domicilio'], 422);
+        }
+
+        if (ReservationWaitlist::where('reservation_id', $reservation->id)->where('user_id', $user->id)->exists()) {
+            return response()->json(['Ya estás registrado en la lista de espera para esta fecha'], 422);
+        }
+
+        $validator = new ReservationsValidator($user->house_id, $reservation->reservation_date);
+        $errors = $validator->validate(true);
+
+        if ($errors) {
+            return response()->json($errors, 422);
+        }
+
+        ReservationWaitlist::create([
+            'reservation_id' => $reservation->id,
+            'user_id' => $user->id,
+        ]);
+
+        return response()->json([
+            'message' => 'Te has anotado en la lista de espera exitosamente',
+        ]);
     }
 
     /**
@@ -323,7 +363,13 @@ class ReservationController extends Controller
 
     public function remove(string $id)
     {
-        if($reservation = Reservation::find($id)) {
+        if ($reservation = Reservation::with('waitlists.user')->find($id)) {
+            $waitlistEmails = $reservation->waitlists
+                ->map(fn ($w) => $w->user?->email)
+                ->filter()
+                ->all();
+
+            $this->notify($waitlistEmails, $reservation, 'waitlist_released');
             $reservation->delete();
 
             return response()->json([

@@ -52,7 +52,7 @@ class ReservationsValidator
             ->get();
     }
 
-    public function validate()
+    public function validate(bool $forWaitlist = false)
     {
         if (!$this->houseId) {
             $this->errors[] = 'No se te ha asignado un domicilio';
@@ -101,7 +101,7 @@ class ReservationsValidator
             $this->errors[] = 'Solo se puede reservar en el rango de fechas (' . $months . ')';
         }
 
-        if (!$this->isAvailable()) {
+        if (!$forWaitlist && !$this->isAvailable()) {
             $this->errors[] = 'Ya hay una reserva para esta fecha';
         }
 

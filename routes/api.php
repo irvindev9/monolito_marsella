@@ -30,6 +30,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations.index');
     Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
+    Route::post('/reservations/waitlist', [ReservationController::class, 'joinWaitlist'])->name('reservations.waitlist');
     Route::get('/reservations/{id}', [ReservationController::class, 'show'])->name('reservations.show')->where('id', '[0-9]+');
     Route::delete('/reservations/{id}', [ReservationController::class, 'destroy'])->name('reservations.destroy');
 

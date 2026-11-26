@@ -59,11 +59,15 @@
 .mrs-legend-dot.pending { background: var(--ink-2); width: 6px; height: 6px; }
 
 .mrs-actions {
-    display: flex; align-items: center; justify-content: space-between;
-    gap: 12px; flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    align-items: center;
+    gap: 10px;
     padding: 6px 4px 2px;
 }
-.mrs-selected { display: inline-flex; flex-direction: column; gap: 2px; }
+.mrs-selected { display: inline-flex; flex-direction: column; gap: 2px; justify-self: start; }
+.mrs-waitlist-slot { display: flex; justify-content: center; }
+.mrs-reserve-slot { display: flex; justify-content: flex-end; }
 .mrs-selected-label {
     color: var(--ink-soft); font-size: 11px; font-weight: 600;
     text-transform: uppercase; letter-spacing: .06em;
@@ -74,18 +78,41 @@
     appearance: none; border: 1px solid var(--line); background: var(--card); color: var(--ink);
     font: inherit; font-size: 13px; font-weight: 600;
     padding: 9px 16px; border-radius: 6px; cursor: pointer;
-    display: inline-flex; align-items: center; gap: 6px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
     transition: all .15s ease;
+    white-space: nowrap;
 }
 .mrs-btn:hover { background: var(--line-2); }
 .mrs-btn-primary {
     background: var(--ink); color: #fff; border-color: var(--ink);
 }
 .mrs-btn-primary:hover { background: #111821; border-color: #111821; }
+.mrs-btn-secondary {
+    background: #fff; color: var(--ink-2); border-color: var(--ink-2);
+}
+.mrs-btn-secondary:hover { background: #f3f7fe; }
 .mrs-btn.is-disabled,
 .mrs-btn:disabled {
     opacity: .5; cursor: not-allowed; pointer-events: none;
 }
+
+.mrs-backdrop {
+    position: fixed; inset: 0; background: rgba(28, 38, 51, .4); z-index: 1500;
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+}
+.mrs-dialog {
+    background: var(--card); border-radius: var(--radius); padding: 22px;
+    max-width: 420px; width: 100%; box-shadow: 0 20px 60px rgba(0, 0, 0, .25);
+}
+.mrs-dialog h3 { font-size: 16px; font-weight: 700; margin: 0 0 8px; }
+.mrs-dialog p  { color: var(--ink-soft); font-size: 13px; margin: 0 0 12px; line-height: 1.5; }
+.mrs-dialog-note {
+    background: #f9fafb; border-left: 3px solid var(--ink-2);
+    padding: 8px 12px; border-radius: 4px; margin-bottom: 18px !important;
+}
+.mrs-dialog .actions { display: flex; justify-content: flex-end; gap: 8px; }
+.mrs-fade-enter-active, .mrs-fade-leave-active { transition: opacity .2s; }
+.mrs-fade-enter-from, .mrs-fade-leave-to { opacity: 0; }
 
 /* Cleaning banners */
 .mrs-cleaning-banner {

@@ -31,6 +31,37 @@ const isDateTaken = computed(() => {
     );
 });
 
+const approvedReservationForPickDate = computed(() => {
+    if (!pickDate.value) return null;
+    return reservations.value.find((r) =>
+        r.is_approved === 1 &&
+        isSameDay(new Date(r.reservation_date), pickDate.value)
+    ) || null;
+});
+
+const showWaitlistModal = ref(false);
+
+async function joinWaitlist() {
+    const res = approvedReservationForPickDate.value;
+    if (!res) return;
+    isLoading.value = true;
+    try {
+        const { data } = await axios.post('/api/reservations/waitlist', {
+            reservation_id: res.id,
+        });
+        toast.success(data.message);
+        showWaitlistModal.value = false;
+        await getReservations();
+    } catch (error) {
+        const msg = Array.isArray(error.response?.data)
+            ? error.response.data[0]
+            : (error.response?.data?.message || 'Error al registrarse en la lista de espera');
+        toast.error(`Error: ${msg}`);
+    } finally {
+        isLoading.value = false;
+    }
+}
+
 async function reserveDate() {
     if (!pickDate.value) return;
     isLoading.value = true;
@@ -321,23 +352,56 @@ function updateCalendarAttrs() {
                         <span class="mrs-selected-label">Fecha seleccionada</span>
                         <span class="mrs-selected-value">{{ pickDate ? format(pickDate, 'dd/MM/yyyy') : '--/--/----' }}</span>
                     </div>
-                    <button
-                        class="mrs-btn mrs-btn-primary"
-                        :class="{ 'is-disabled': !pickDate || isDateTaken || isLoading }"
-                        :disabled="!pickDate || isDateTaken || isLoading"
-                        @click="open"
-                    >
-                        <span v-if="isLoading">Guardando...</span>
-                        <span v-else-if="!pickDate">Selecciona una fecha</span>
-                        <span v-else-if="isDateTaken">Fecha ocupada</span>
-                        <span v-else>Reservar fecha</span>
-                    </button>
+                    <div class="mrs-waitlist-slot">
+                        <button
+                            v-if="approvedReservationForPickDate"
+                            class="mrs-btn mrs-btn-secondary"
+                            :class="{ 'is-disabled': approvedReservationForPickDate.in_waitlist || isLoading }"
+                            :disabled="approvedReservationForPickDate.in_waitlist || isLoading"
+                            @click="showWaitlistModal = true"
+                        >
+                            <span>{{ approvedReservationForPickDate.in_waitlist ? 'En lista de espera' : 'Lista de espera' }}</span>
+                        </button>
+                    </div>
+                    <div class="mrs-reserve-slot">
+                        <button
+                            class="mrs-btn mrs-btn-primary"
+                            :class="{ 'is-disabled': !pickDate || isDateTaken || isLoading }"
+                            :disabled="!pickDate || isDateTaken || isLoading"
+                            @click="open"
+                        >
+                            <span v-if="isLoading">Guardando...</span>
+                            <span v-else-if="!pickDate">Selecciona una fecha</span>
+                            <span v-else-if="isDateTaken">Fecha ocupada</span>
+                            <span v-else>Reservar fecha</span>
+                        </button>
+                    </div>
                 </div>
             </div>
 
             <div class="mrs-container mrs-reservations">
                 <Reservation v-if="!isLoading" @refresh="getReservations" />
             </div>
+
+            <transition name="mrs-fade">
+                <div v-if="showWaitlistModal" class="mrs-backdrop" @click="showWaitlistModal = false">
+                    <div class="mrs-dialog" @click.stop>
+                        <h3>Lista de espera</h3>
+                        <p>
+                            Esta fecha se encuentra ocupada. Si se llega a liberar, recibirás una notificación por correo electrónico para que puedas ingresar a realizar la reservación.
+                        </p>
+                        <p class="mrs-dialog-note">
+                            <strong>Importante:</strong> Solo recibirás la notificación; la reservación no se realiza de forma automática.
+                        </p>
+                        <div class="actions">
+                            <button class="mrs-btn" @click="showWaitlistModal = false">Cancelar</button>
+                            <button class="mrs-btn mrs-btn-primary" :disabled="isLoading" @click="joinWaitlist">
+                                {{ isLoading ? 'Guardando...' : 'Notificarme' }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </transition>
         </div>
         <LoadingScreen :show="isLoading" />
         <ModalsContainer />

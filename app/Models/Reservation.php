@@ -30,4 +30,9 @@ class Reservation extends Model
     {
         return $this->hasOne(CleaningReport::class);
     }
+
+    public function waitlists()
+    {
+        return $this->hasMany(ReservationWaitlist::class);
+    }
 }

@@ -29,6 +29,7 @@ class ReservationNotification extends Mailable
             'created' => "Nueva solicitud de reserva - {$date}",
             'approved' => "Tu reserva del {$date} fue aprobada",
             'rejected' => "Tu reserva del {$date} fue rechazada",
+            'waitlist_released' => "¡Fecha disponible para reservar! - {$date}",
             default => "Actualización de reserva - {$date}",
         };
 
@@ -38,9 +39,11 @@ class ReservationNotification extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: $this->type === 'created'
-                ? 'emails.reservations.created'
-                : 'emails.reservations.status',
+            view: match ($this->type) {
+                'created' => 'emails.reservations.created',
+                'waitlist_released' => 'emails.reservations.waitlist-released',
+                default => 'emails.reservations.status',
+            },
         );
     }
 }
