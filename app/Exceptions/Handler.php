@@ -27,4 +27,21 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    public function render($request, Throwable $e)
+    {
+        $response = parent::render($request, $e);
+
+        if ($response->getStatusCode() === 419) {
+            if ($request->expectsJson() && ! $request->header('X-Inertia')) {
+                return response()->json(['message' => 'Tu sesión expiró, recargando...'], 419);
+            }
+
+            return back()->with([
+                'status' => 'La página expiró por inactividad, por favor intenta de nuevo.',
+            ]);
+        }
+
+        return $response;
+    }
 }
