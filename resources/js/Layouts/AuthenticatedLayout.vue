@@ -38,14 +38,12 @@ const dismissInstallBanner = () => {
 };
 
 const openInstallGuide = async () => {
-    setDismissCookie();
-    showInstallBanner.value = false;
-
     if (deferredInstallPrompt.value) {
         deferredInstallPrompt.value.prompt();
         const { outcome } = await deferredInstallPrompt.value.userChoice;
         deferredInstallPrompt.value = null;
         if (outcome === 'accepted') {
+            showInstallBanner.value = false;
             return;
         }
     }
