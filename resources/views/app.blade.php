@@ -6,11 +6,11 @@
         <meta name="theme-color" content="#1877B8">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="default">
-        <meta name="apple-mobile-web-app-title" content="Marsella">
+        <meta name="apple-mobile-web-app-title" content="Versalles Marsella">
         <link rel="manifest" href="/manifest.json">
         <link rel="apple-touch-icon" href="/images/icon-192.png">
 
-        <title inertia>{{ config('app.name', 'Laravel') }}</title>
+        <title inertia>{{ config('app.name', 'Versalles Marsella') }}</title>
         <link rel="icon" type="image/svg+xml" href="/favicon.svg">
         <link rel="alternate icon" href="/favicon.ico">
 

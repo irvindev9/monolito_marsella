@@ -1,6 +1,6 @@
 {
     "name": "Versalles Marsella",
-    "short_name": "Marsella",
+    "short_name": "Versalles Marsella",
     "description": "Sistema de reservaciones y directorio de Versalles Marsella",
     "start_url": "/dashboard",
     "scope": "/",

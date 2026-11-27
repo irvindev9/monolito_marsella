@@ -14,7 +14,7 @@ import Vue3Toasity from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css'
 import 'vue-final-modal/style.css'
 
-const appName = import.meta.env.VITE_APP_NAME || 'Marsella Etapa 1';
+const appName = import.meta.env.VITE_APP_NAME || 'Versalles Marsella';
 
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
