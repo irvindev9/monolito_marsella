@@ -4,7 +4,7 @@ Sistema de administracion de amenidades y reservaciones para la comunidad reside
 
 ## Stack tecnologico
 
-- **Backend**: Laravel 10.10 (PHP 8.1+) con Eloquent ORM y MySQL
+- **Backend**: Laravel 11 (PHP 8.4+) con Eloquent ORM y MySQL
 - **Frontend**: Vue 3 (Composition API + `<script setup>`) con Inertia.js
 - **Estado**: Pinia (`resources/js/Stores/adminStore.js`)
 - **CSS**: Tailwind CSS 3.2 + Bootstrap 5.3 + Bootstrap Icons
