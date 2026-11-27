@@ -9,6 +9,7 @@ use App\Http\Controllers\ConfigController;
 use App\Http\Controllers\RestrictionController;
 use App\Http\Controllers\DirectoryController;
 use App\Http\Controllers\PasswordController;
+use App\Http\Controllers\PushSubscriptionController;
 use App\Http\Controllers\CleaningReportController;
 use App\Http\Controllers\CleaningCriteriaController;
 
@@ -44,6 +45,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/cleaning/report', [CleaningReportController::class, 'store'])->name('cleaning.report.store');
 
     Route::get('/configs/payment', [ConfigController::class, 'paymentInfo'])->name('config.payment');
+
+    Route::post('/push-subscriptions', [PushSubscriptionController::class, 'store'])->name('push-subscriptions.store');
+    Route::post('/push-subscriptions/unsubscribe', [PushSubscriptionController::class, 'destroy'])->name('push-subscriptions.destroy');
 });
 
 Route::middleware(['auth:sanctum', 'verified', 'admin:sanctum'])->group(function () {

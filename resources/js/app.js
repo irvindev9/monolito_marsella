@@ -16,6 +16,12 @@ import 'vue-final-modal/style.css'
 
 const appName = import.meta.env.VITE_APP_NAME || 'Marsella Etapa 1';
 
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+    });
+}
+
 const vfm = createVfm()
 
 createInertiaApp({

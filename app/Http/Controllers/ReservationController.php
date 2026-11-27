@@ -7,12 +7,14 @@ use App\Models\Reservation;
 use App\Models\ReservationWaitlist;
 use App\Models\House;
 use App\Models\User;
+use App\Notifications\ReservationPushNotification;
 use App\Validations\ReservationsValidator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use App\Models\Config;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 
 class ReservationController extends Controller
 {
@@ -156,13 +158,28 @@ class ReservationController extends Controller
                 'reservation_id' => $reservation?->id,
                 'type' => $type,
             ]);
+        } else {
+            try {
+                Mail::to($recipients)->send(new ReservationNotification($reservation, $type, $seasonRequestCount));
+            } catch (\Throwable $e) {
+                Log::error('Error al enviar correo de reservación: ' . $e->getMessage(), [
+                    'reservation_id' => $reservation?->id,
+                    'type' => $type,
+                ]);
+            }
+        }
+
+        if (empty(config('webpush.vapid.public_key')) || empty(config('webpush.vapid.private_key'))) {
             return;
         }
 
         try {
-            Mail::to($recipients)->send(new ReservationNotification($reservation, $type, $seasonRequestCount));
+            $users = User::whereIn('email', $recipients)->whereHas('pushSubscriptions')->get();
+            if ($users->isNotEmpty()) {
+                Notification::send($users, new ReservationPushNotification($reservation, $type));
+            }
         } catch (\Throwable $e) {
-            Log::error('Error al enviar correo de reservación: ' . $e->getMessage(), [
+            Log::error('Error al enviar notificación push de reservación: ' . $e->getMessage(), [
                 'reservation_id' => $reservation?->id,
                 'type' => $type,
             ]);

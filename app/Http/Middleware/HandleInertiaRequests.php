@@ -40,6 +40,7 @@ class HandleInertiaRequests extends Middleware
                 ]);
             },
             'recaptchaSiteKey' => config('services.recaptcha.site_key'),
+            'vapidPublicKey' => config('webpush.vapid.public_key'),
         ]);
     }
 }
