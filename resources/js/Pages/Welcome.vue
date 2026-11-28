@@ -1,6 +1,8 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
+import terraza1 from '../../assets/terraza1.jpeg';
+import terraza2 from '../../assets/terraza2.jpeg';
 
 defineProps({
     canLogin: {
@@ -23,62 +25,91 @@ defineProps({
 <template>
     <Head title="Inicio" />
 
-    <div
-        class="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-dots-darker bg-center bg-gray-100 selection:bg-red-500 selection:text-white">
-        <div v-if="canLogin" class="sm:fixed sm:top-0 sm:right-0 p-6 text-right">
-            <Link v-if="$page.props.auth.user" :href="route('dashboard')"
-                class="font-semibold text-gray-600 hover:text-gray-900 focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">
-            Terraza
-            </Link>
+    <div class="min-h-screen bg-[#f8fafc] text-[#1c2633] flex flex-col justify-between selection:bg-[#2A4B6D] selection:text-white">
+        <main class="max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 flex-1 flex flex-col justify-center">
+            <!-- Encabezado y Acciones Principales -->
+            <div class="text-center max-w-xl mx-auto">
+                <div class="flex justify-center">
+                    <ApplicationLogo class="w-20 h-20 sm:w-24 sm:h-24 drop-shadow-sm" />
+                </div>
 
-            <template v-else>
-                <Link :href="route('login')"
-                    class="font-semibold text-gray-600 hover:text-gray-900 focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">
-                Inicio de sesión
-                </Link>
+                <h1 class="mt-5 text-2xl sm:text-4xl font-bold tracking-tight text-[#1c2633]">
+                    Versalles Marsella
+                </h1>
+                <p class="mt-2 text-sm sm:text-base text-[#5d6b7a]">
+                    Portal de residentes para reservación de terraza y directorio vecinal.
+                </p>
 
-                <Link v-if="canRegister" :href="route('register')"
-                    class="ml-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">
-                Registro
-                </Link>
-            </template>
-        </div>
+                <!-- Botones de Acceso Directo -->
+                <div v-if="canLogin" class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-4">
+                    <Link
+                        v-if="$page.props.auth.user"
+                        :href="route('dashboard')"
+                        class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-lg bg-[#1c2633] hover:bg-[#2A4B6D] text-white font-semibold text-base shadow-sm transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#2A4B6D] focus:ring-offset-2"
+                    >
+                        <i class="bi bi-calendar-check"></i>
+                        <span>Ir a Terraza</span>
+                    </Link>
 
-        <div class="max-w-7xl mx-auto p-6 lg:p-8">
-            <div class="flex justify-center">
-                <ApplicationLogo class="w-24 h-24" />
-            </div>
+                    <template v-else>
+                        <Link
+                            :href="route('login')"
+                            class="w-full sm:w-auto sm:min-w-[200px] inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-lg bg-[#1c2633] hover:bg-[#2A4B6D] text-white font-semibold text-base shadow-sm transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#2A4B6D] focus:ring-offset-2"
+                        >
+                            <i class="bi bi-box-arrow-in-right"></i>
+                            <span>Iniciar sesión</span>
+                        </Link>
 
-            <div class="mt-16">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-                    <div
-                        class="shadow-black welcome-img scale-100 bg-white rounded-lg shadow-2xl shadow-gray-500/20 flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">
-                    </div>
-
-                    <div
-                        class="shadow-black welcome-img-2 scale-100 p-6 bg-white rounded-lg shadow-2xl shadow-gray-500/20 flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">
-                    </div>
-
-                    <div
-                        class="shadow-black welcome-img-3 scale-100 p-6 bg-white rounded-lg shadow-2xl shadow-gray-500/20 flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">
-                    </div>
-
-                    <div
-                        class="shadow-black welcome-img scale-100 bg-white rounded-lg shadow-2xl shadow-gray-500/20 flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">
-                    </div>
+                        <Link
+                            v-if="canRegister"
+                            :href="route('register')"
+                            class="w-full sm:w-auto sm:min-w-[200px] inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-lg bg-white hover:bg-slate-50 text-[#1c2633] border border-[#cbd5e1] font-semibold text-base shadow-sm transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#2A4B6D] focus:ring-offset-2"
+                        >
+                            <i class="bi bi-person-plus"></i>
+                            <span>Crear cuenta</span>
+                        </Link>
+                    </template>
                 </div>
             </div>
 
-            <div class="flex justify-center mt-16 px-6 sm:items-center sm:justify-between">
-                <div class="text-center text-sm text-gray-500 sm:text-left">
+            <!-- Las 2 mejores fotos del fraccionamiento -->
+            <div class="mt-10 sm:mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <figure class="group relative overflow-hidden rounded-xl bg-white border border-[#e2e8f0] shadow-md">
+                    <img
+                        :src="terraza2"
+                        alt="Acceso principal Versalles Marsella"
+                        class="w-full h-64 sm:h-72 object-cover object-center group-hover:scale-[1.02] transition-transform duration-300"
+                    />
+                    <figcaption class="px-4 py-3 bg-white border-t border-[#f1f5f9] flex items-center justify-between text-xs sm:text-sm text-[#475569]">
+                        <span class="font-semibold text-[#1c2633]">Acceso Principal</span>
+                        <span>Fraccionamiento Marsella</span>
+                    </figcaption>
+                </figure>
 
-                </div>
-
-                <a href="http://irvin-lopez.com" target="_blank"
-                    class="ml-4 text-center text-sm text-gray-500 sm:text-right sm:ml-0">
-                    <i class="bi bi-lightning-charge"></i> Irvin Raúl López
-                </a>
+                <figure class="group relative overflow-hidden rounded-xl bg-white border border-[#e2e8f0] shadow-md">
+                    <img
+                        :src="terraza1"
+                        alt="Terraza y área común Versalles Marsella"
+                        class="w-full h-64 sm:h-72 object-cover object-center group-hover:scale-[1.02] transition-transform duration-300"
+                    />
+                    <figcaption class="px-4 py-3 bg-white border-t border-[#f1f5f9] flex items-center justify-between text-xs sm:text-sm text-[#475569]">
+                        <span class="font-semibold text-[#1c2633]">Terraza y Área Común</span>
+                        <span>Espacio para eventos y juegos</span>
+                    </figcaption>
+                </figure>
             </div>
-        </div>
+        </main>
+
+        <footer class="py-6 px-4 text-center text-sm text-[#5d6b7a]">
+            <a
+                href="http://irvin-lopez.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1 hover:text-[#1c2633] transition-colors"
+            >
+                <i class="bi bi-lightning-charge"></i>
+                <span>Irvin Raúl López</span>
+            </a>
+        </footer>
     </div>
 </template>
