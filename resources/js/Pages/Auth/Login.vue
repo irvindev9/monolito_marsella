@@ -4,9 +4,11 @@ import GuestLayout from '@/Layouts/GuestLayout.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import { useRecaptcha } from '@/Composables/useRecaptcha';
+import { usePasskey } from '@/Composables/usePasskey';
 
 defineProps({
     canResetPassword: {
@@ -18,6 +20,7 @@ defineProps({
 });
 
 const { executeRecaptcha } = useRecaptcha();
+const { processing: passkeyProcessing, error: passkeyError, isSupported, loginWithPasskey } = usePasskey();
 
 const form = useForm({
     email: '',
@@ -31,6 +34,13 @@ const submit = async () => {
     form.post(route('login'), {
         onFinish: () => form.reset('password'),
     });
+};
+
+const handlePasskeyLogin = async () => {
+    const result = await loginWithPasskey(form.email, form.remember);
+    if (result) {
+        router.visit(result.redirect || route('dashboard'));
+    }
 };
 </script>
 
@@ -48,7 +58,7 @@ const submit = async () => {
                 <InputLabel for="email" value="Correo" />
 
                 <TextInput id="email" type="email" class="mt-1 block w-full" v-model="form.email" required autofocus
-                    autocomplete="username" />
+                    autocomplete="username webauthn" />
 
                 <InputError class="mt-2" :message="form.errors.email" />
             </div>
@@ -70,16 +80,30 @@ const submit = async () => {
             </div>
 
             <InputError class="mt-2" :message="form.errors.recaptcha_token" />
+            <InputError class="mt-2" :message="passkeyError" />
 
             <div class="flex items-center justify-end mt-4">
-                <!-- <Link v-if="canResetPassword" :href="route('password.request')"
+                <Link v-if="canResetPassword" :href="route('password.request')"
                     class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                Olvidaste tu contraseña?
-                </Link> -->
+                ¿Olvidaste tu contraseña?
+                </Link>
 
-                <PrimaryButton class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                <PrimaryButton class="ml-4" :class="{ 'opacity-25': form.processing || passkeyProcessing }" :disabled="form.processing || passkeyProcessing">
                     Ingresar
                 </PrimaryButton>
+            </div>
+
+            <div v-if="isSupported()" class="mt-5 border-t border-gray-200 pt-4">
+                <SecondaryButton
+                    type="button"
+                    class="w-full justify-center"
+                    :class="{ 'opacity-25': form.processing || passkeyProcessing }"
+                    :disabled="form.processing || passkeyProcessing"
+                    @click="handlePasskeyLogin"
+                >
+                    <i class="bi bi-fingerprint mr-2"></i>
+                    Ingresar con Passkey
+                </SecondaryButton>
             </div>
         </form>
     </GuestLayout>

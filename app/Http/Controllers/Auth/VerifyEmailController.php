@@ -23,6 +23,10 @@ class VerifyEmailController extends Controller
             event(new Verified($request->user()));
         }
 
+        if ($request->user()->needsPasskeyPrompt()) {
+            return redirect()->route('passkey.prompt');
+        }
+
         return redirect()->intended(RouteServiceProvider::HOME.'?verified=1');
     }
 }

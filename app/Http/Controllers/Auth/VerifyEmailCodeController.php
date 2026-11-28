@@ -32,6 +32,10 @@ class VerifyEmailCodeController extends Controller
             ]);
         }
 
+        if ($user->needsPasskeyPrompt()) {
+            return redirect()->route('passkey.prompt')->with('status', 'Correo verificado exitosamente.');
+        }
+
         return redirect()->intended(RouteServiceProvider::HOME)->with('status', 'Correo verificado exitosamente.');
     }
 }

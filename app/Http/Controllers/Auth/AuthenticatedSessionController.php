@@ -43,6 +43,10 @@ class AuthenticatedSessionController extends Controller
             return redirect()->route('verification.notice');
         }
 
+        if ($request->user()->needsPasskeyPrompt()) {
+            return redirect()->route('passkey.prompt');
+        }
+
         return redirect()->intended(RouteServiceProvider::HOME);
     }
 
